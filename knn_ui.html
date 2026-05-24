@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistem Rekomendasi Ekskul (KNN)</title>
+    <link rel="stylesheet" href="knn_style.css">
+    <!-- Font Awesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- SheetJS for Excel Parsing -->
+    <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+</head>
+<body>
+    <aside class="sidebar">
+        <div class="logo">
+            <i class="fa-solid fa-cube"></i> EkskulKNN
+        </div>
+        <ul class="nav-links">
+            <li class="nav-item active" data-target="dashboard"><i class="fa-solid fa-chart-line"></i> Dashboard</li>
+            <li class="nav-item" data-target="data-training"><i class="fa-solid fa-file-excel"></i> Data Training</li>
+            <li class="nav-item" data-target="prediksi"><i class="fa-solid fa-users"></i> Prediksi Siswa</li>
+            <li class="nav-item" data-target="riwayat"><i class="fa-solid fa-clock-rotate-left"></i> Riwayat</li>
+            <li class="nav-item" style="margin-top: 2rem;"><i class="fa-solid fa-gear"></i> Pengaturan</li>
+        </ul>
+    </aside>
+
+    <main class="main-content">
+        <header>
+            <div>
+                <h1 id="pageTitle">Dashboard</h1>
+                <p style="color: var(--text-muted); margin-top: 0.25rem;">Menggunakan algoritma K-Nearest Neighbors</p>
+            </div>
+            <div class="user-profile">
+                <span style="color: var(--text-muted);">Admin/Guru</span>
+                <div class="avatar"></div>
+            </div>
+        </header>
+
+        <!-- VIEW: DASHBOARD -->
+        <div id="view-dashboard" class="view-section active dashboard-grid" style="grid-template-columns: 1fr;">
+            <div class="glass-card" style="text-align: center; padding: 4rem 2rem;">
+                <h2 style="font-size: 2rem; margin-bottom: 1rem;">Selamat Datang di Sistem Rekomendasi Ekskul</h2>
+                <p style="color: var(--text-muted); max-width: 600px; margin: 0 auto; line-height: 1.6;">
+                    Gunakan menu navigasi di sebelah kiri. Mulailah dengan mengunggah dataset Excel pada menu <b>Data Training</b>, kemudian gunakan menu <b>Prediksi Siswa</b> untuk mulai mendapatkan rekomendasi ekstrakurikuler.
+                </p>
+                
+                <div style="margin-top: 3rem; display: flex; gap: 2rem; justify-content: center;">
+                    <div style="background: rgba(0,0,0,0.2); padding: 2rem; border-radius: 1rem; width: 220px; border: 1px solid rgba(255,255,255,0.05);">
+                        <h3 id="dashTotalData" style="font-size: 2.5rem; color: var(--primary);">0</h3>
+                        <p style="color: var(--text-muted); font-size: 0.95rem; margin-top: 0.5rem;">Total Data Latih</p>
+                    </div>
+                    <div style="background: rgba(0,0,0,0.2); padding: 2rem; border-radius: 1rem; width: 220px; border: 1px solid rgba(255,255,255,0.05);">
+                        <h3 id="dashKValue" style="font-size: 2.5rem; color: var(--accent);">3</h3>
+                        <p style="color: var(--text-muted); font-size: 0.95rem; margin-top: 0.5rem;">Parameter K Aktif</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- VIEW: DATA TRAINING -->
+        <div id="view-data-training" class="view-section dashboard-grid" style="grid-template-columns: 1fr;">
+            <div class="glass-card" style="max-width: 800px; margin: 0 auto; width: 100%;">
+                <h2 class="card-title"><i class="fa-solid fa-sliders"></i> Pengaturan Data & Parameter</h2>
+                
+                <div class="upload-zone" id="uploadZone" onclick="document.getElementById('excelFile').click()">
+                    <div class="upload-icon pulse-icon"><i class="fa-solid fa-cloud-arrow-up"></i></div>
+                    <h3>Unggah Data Excel</h3>
+                    <p style="color: var(--text-muted); font-size: 0.85rem; margin-top: 0.5rem;">Pilih file dataset_nilai_siswa.xlsx Anda</p>
+                    <span id="uploadStatus" style="display:none; color: var(--success); font-weight: 600; margin-top: 1rem;">File dataset siap!</span>
+                </div>
+                <input type="file" id="excelFile" accept=".xlsx, .xls" style="display: none;">
+
+                <div class="setting-group" style="margin-top: 2rem;">
+                    <div class="setting-header">
+                        <span class="setting-label">Parameter K (Tetangga Terdekat)</span>
+                        <span class="setting-value" id="kValue">3</span>
+                    </div>
+                    <input type="range" id="kSlider" min="1" max="15" value="3" step="2">
+                    <p style="font-size: 0.8rem; color: var(--text-muted); margin-top: 0.5rem;">Jumlah tetangga yang akan di-voting untuk klasifikasi (K disarankan bilangan ganjil).</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- VIEW: PREDIKSI SISWA -->
+        <div id="view-prediksi" class="view-section dashboard-grid" style="grid-template-columns: 1fr;">
+            <div class="glass-card" style="max-width: 800px; margin: 0 auto; width: 100%;">
+                <h2 class="card-title"><i class="fa-solid fa-user-plus"></i> Input Nilai Siswa (4 Kriteria)</h2>
+                
+                <form id="predictionForm">
+                    <div class="input-grid">
+                        <div class="input-field"><label>Matematika (MTK)</label><input type="number" class="score-input" placeholder="0-100" min="0" max="100" required></div>
+                        <div class="input-field"><label>Ilmu Peng. Alam (IPA)</label><input type="number" class="score-input" placeholder="0-100" min="0" max="100" required></div>
+                        <div class="input-field"><label>Olahraga (PJOK)</label><input type="number" class="score-input" placeholder="0-100" min="0" max="100" required></div>
+                        <div class="input-field"><label>Seni Budaya (SBP)</label><input type="number" class="score-input" placeholder="0-100" min="0" max="100" required></div>
+                    </div>
+                    
+                    <button type="button" class="btn-primary" id="predictBtn">
+                        <i class="fa-solid fa-wand-magic-sparkles"></i> Dapatkan Rekomendasi Ekskul
+                    </button>
+                </form>
+
+                <div class="result-panel glass-card" id="resultPanel">
+                    <div class="result-label">Rekomendasi Ekstrakurikuler:</div>
+                    <div class="result-value" id="predResult">-</div>
+                    
+                    <h3 style="margin-top: 1.5rem; font-size: 1rem; color: #fff; text-align: left;"><i class="fa-solid fa-users"></i> K-Tetangga Terdekat</h3>
+                    <div class="table-container">
+                        <table class="neighbors-table" id="neighborsTable">
+                            <thead>
+                                <tr>
+                                    <th>Nama Siswa (Data)</th>
+                                    <th>Rank</th>
+                                    <th>Jarak (Euclidean)</th>
+                                    <th>Ekskul</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <!-- Injected by JS -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+        
+        <!-- VIEW: RIWAYAT -->
+        <div id="view-riwayat" class="view-section dashboard-grid" style="grid-template-columns: 1fr;">
+            <div class="glass-card" style="max-width: 800px; margin: 0 auto; width: 100%;">
+                <h2 class="card-title"><i class="fa-solid fa-clock-rotate-left"></i> Riwayat Prediksi Siswa</h2>
+                
+                <div id="emptyRiwayat" style="text-align: center; padding: 4rem 2rem;">
+                    <i class="fa-solid fa-folder-open" style="font-size: 4rem; color: rgba(255,255,255,0.1); margin-bottom: 1.5rem;"></i>
+                    <h3 style="font-size: 1.5rem; color: var(--text-main);">Belum Ada Riwayat</h3>
+                    <p style="color: var(--text-muted); margin-top: 0.5rem;">Lakukan prediksi terlebih dahulu di menu Prediksi Siswa.</p>
+                </div>
+
+                <div id="tableRiwayatContainer" class="table-container" style="display: none;">
+                    <table class="neighbors-table" id="historyTable">
+                        <thead>
+                            <tr>
+                                <th>Waktu Prediksi</th>
+                                <th>Nilai Input (MTK, IPA, PJOK, SBP)</th>
+                                <th>K-Value</th>
+                                <th>Hasil Rekomendasi</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- Injected by JS -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <script src="knn_script.js"></script>
+</body>
+</html>
