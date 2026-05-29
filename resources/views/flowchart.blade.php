@@ -76,7 +76,7 @@
         <div class="topbar">
             <div>
                 <h1>Flowchart Sistem Rekomendasi Ekskul KNN</h1>
-                <p>Alur disesuaikan dengan proses pada aplikasi Laravel.</p>
+                <p>Alur disesuaikan dengan proses aplikasi Laravel dan database MySQL.</p>
             </div>
             <a href="{{ route('knn.index') }}">Kembali ke Aplikasi</a>
         </div>
@@ -84,34 +84,34 @@
         <pre class="mermaid">
 flowchart TD
     A([Mulai]) --> B[Dashboard Sistem Rekomendasi Ekskul]
-    B --> C[/Menu Data Training:<br>Unggah file Excel dataset nilai siswa/]
+    B --> C[/Menu Data Training:<br>Import file dataset siswa/]
 
-    subgraph P["Pre-processing Data Excel"]
-        C --> D[SheetJS membaca sheet pertama<br>menjadi array data]
-        D --> E[Ambil baris data mulai indeks 2<br>dan lewati baris kosong]
-        E --> F{Kolom wajib tersedia?<br>Nama siswa dan Ekskul}
-        F -- Tidak --> G[/Tampilkan pesan gagal<br>format Excel tidak sesuai/]
+    subgraph P["Pengelolaan Dataset MySQL"]
+        C --> D[Laravel membaca file .xlsx/.csv<br>dan memetakan header kolom]
+        D --> E[Validasi data:<br>nama, nilai, rank, ekskul]
+        E --> F{Data valid?}
+        F -- Tidak --> G[/Tampilkan pesan validasi/]
         G --> Z([Selesai])
-        F -- Ya --> H[Ambil 4 fitur nilai:<br>MTK, IPA, PJOK, SBP]
-        H --> I[Simpan data latih:<br>Nama, 4 nilai, Rank, Ekskul]
+        F -- Ya --> H[Ambil kolom utama:<br>Nama, IPA, PJOK, SBP,<br>Rank, Ekskul]
+        H --> I[Simpan data latih<br>ke tabel knn_training_samples]
         I --> J[Perbarui dashboard:<br>Total Data Latih]
     end
 
     J --> K[/Atur Parameter K<br>melalui slider/]
-    K --> L[/Menu Prediksi Siswa:<br>Input nilai MTK, IPA, PJOK, SBP/]
+    K --> L[/Menu Prediksi Siswa:<br>Input nilai dan ekstrakurikuler/]
 
     subgraph V["Validasi Prediksi"]
-        L --> M{Data latih sudah diunggah?}
-        M -- Tidak --> N[/Alert:<br>Unggah Data Excel terlebih dahulu/]
+        L --> M{Data latih tersedia<br>di MySQL?}
+        M -- Tidak --> N[/Alert:<br>Isi Data Training terlebih dahulu/]
         N --> Z
-        M -- Ya --> O{Ke-4 nilai sudah diisi?}
-        O -- Tidak --> Q[/Alert:<br>Lengkapi nilai siswa/]
+        M -- Ya --> O{Input prediksi lengkap?}
+        O -- Tidak --> Q[/Alert:<br>Lengkapi data siswa/]
         Q --> Z
     end
 
     subgraph KNN["Proses Algoritma KNN"]
-        O -- Ya --> R[Gunakan semua data latih<br>tanpa filter Top N]
-        R --> S[Hitung jarak Euclidean<br>antara input siswa dan tiap data latih]
+        O -- Ya --> R[Ambil seluruh data latih<br>dari tabel MySQL]
+        R --> S[Hitung jarak Euclidean<br>berdasarkan nilai dan<br>ekstrakurikuler]
         S --> T[Urutkan jarak<br>dari terkecil ke terbesar]
         T --> U[Ambil K tetangga terdekat]
         U --> W[Hitung voting mayoritas<br>berdasarkan Ekskul tetangga]
@@ -123,7 +123,7 @@ flowchart TD
     Y --> AB[/Output rekomendasi Ekskul/]
     AA --> AB
     AB --> AC[Tampilkan tabel K tetangga:<br>Nama, Rank, Jarak Euclidean, Ekskul]
-    AC --> AD[Simpan hasil ke Riwayat Prediksi:<br>Waktu, nilai input, K, hasil]
+    AC --> AD[Simpan hasil ke tabel<br>knn_prediction_histories]
     AD --> AE([Selesai])
 
     classDef startEnd fill:#dcfce7,stroke:#16a34a,stroke-width:2px,color:#14532d;
