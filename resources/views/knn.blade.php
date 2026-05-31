@@ -53,7 +53,7 @@
             <div class="glass-card" style="text-align: center; padding: 4rem 2rem;">
                 <h2 style="font-size: 2rem; margin-bottom: 1rem;">Sistem Rekomendasi Ekstrakurikuler</h2>
                 <p style="color: var(--text-muted); max-width: 720px; margin: 0 auto; line-height: 1.6;">
-                    Rumusan masalah difokuskan pada pembuatan sistem berbasis Laravel, penggunaan data siswa dari database MySQL, dan penerapan K-Nearest Neighbor memakai nilai akademik serta ekstrakurikuler.
+                    Rumusan masalah difokuskan pada pembuatan sistem berbasis Laravel, penggunaan data siswa dari database MySQL, dan penerapan K-Nearest Neighbor memakai nilai akademik.
                 </p>
 
                 <div class="stats-row">
@@ -88,7 +88,7 @@
                         </label>
                         <input type="file" id="trainingFile" name="training_file" accept=".xlsx,.csv" required>
                         <div class="template-columns">
-                            Nama, IPA, PJOK, SBP/Seni Budaya, RANK, Ekskul
+                            Nama, MTK, IPA, IPS, BINDO/Bahasa Indonesia, PJOK, SBP/Seni Budaya, RANK, Ekskul
                         </div>
                     </div>
                     <button type="submit" class="btn-primary"><i class="fa-solid fa-file-import"></i> Import dan Simpan Data Training</button>
@@ -99,7 +99,10 @@
                         <thead>
                             <tr>
                                 <th>Nama</th>
+                                <th>MTK</th>
                                 <th>IPA</th>
+                                <th>IPS</th>
+                                <th>B. Indonesia</th>
                                 <th>PJOK</th>
                                 <th>Seni Budaya</th>
                                 <th>Rank</th>
@@ -110,14 +113,17 @@
                             @forelse ($trainingSamples as $sample)
                                 <tr>
                                     <td>{{ $sample->nama_siswa }}</td>
+                                    <td>{{ $sample->nilai_matematika }}</td>
                                     <td>{{ $sample->nilai_ipa }}</td>
+                                    <td>{{ $sample->nilai_ips }}</td>
+                                    <td>{{ $sample->nilai_bahasa_indonesia }}</td>
                                     <td>{{ $sample->nilai_pjok }}</td>
                                     <td>{{ $sample->nilai_seni_budaya }}</td>
                                     <td>{{ $sample->rank }}</td>
                                     <td>{{ $sample->ekstrakurikuler }}</td>
                                 </tr>
                             @empty
-                                <tr><td colspan="6">Belum ada data training.</td></tr>
+                                <tr><td colspan="9">Belum ada data training.</td></tr>
                             @endforelse
                         </tbody>
                     </table>
@@ -133,15 +139,10 @@
                     @csrf
                     <div class="input-grid three">
                         <div class="input-field"><label>Nama Siswa</label><input name="nama_siswa" value="{{ old('nama_siswa') }}" placeholder="Opsional"></div>
-                        <div class="input-field"><label>Ekstrakurikuler</label>
-                            <select name="ekstrakurikuler" required>
-                                @foreach ($ekskulOptions as $option)
-                                    <option value="{{ $option }}" @selected(old('ekstrakurikuler') === $option)>{{ $option }}</option>
-                                @endforeach
-                            </select>
-                        </div>
                         <div class="input-field"><label>Matematika</label><input type="number" name="nilai_matematika" value="{{ old('nilai_matematika') }}" min="0" max="100" required></div>
                         <div class="input-field"><label>IPA</label><input type="number" name="nilai_ipa" value="{{ old('nilai_ipa') }}" min="0" max="100" required></div>
+                        <div class="input-field"><label>IPS</label><input type="number" name="nilai_ips" value="{{ old('nilai_ips') }}" min="0" max="100" required></div>
+                        <div class="input-field"><label>Bahasa Indonesia</label><input type="number" name="nilai_bahasa_indonesia" value="{{ old('nilai_bahasa_indonesia') }}" min="0" max="100" required></div>
                         <div class="input-field"><label>PJOK</label><input type="number" name="nilai_pjok" value="{{ old('nilai_pjok') }}" min="0" max="100" required></div>
                         <div class="input-field"><label>Seni Budaya</label><input type="number" name="nilai_seni_budaya" value="{{ old('nilai_seni_budaya') }}" min="0" max="100" required></div>
                     </div>
@@ -187,6 +188,91 @@
                         </table>
                     </div>
                 </div>
+
+                @if ($prediction)
+                    @php
+                        $inputValues = [
+                            'Matematika' => $prediction->nilai_matematika,
+                            'IPA' => $prediction->nilai_ipa,
+                            'IPS' => $prediction->nilai_ips,
+                            'Bahasa Indonesia' => $prediction->nilai_bahasa_indonesia,
+                            'PJOK' => $prediction->nilai_pjok,
+                            'Seni Budaya' => $prediction->nilai_seni_budaya,
+                        ];
+                        $voteCounts = collect($prediction->tetangga_terdekat)
+                            ->countBy('ekstrakurikuler')
+                            ->sortDesc();
+                    @endphp
+                    <div class="modal-backdrop active" id="calculationModal">
+                        <div class="calculation-modal">
+                            <div class="modal-header">
+                                <div>
+                                    <span class="modal-eyebrow">Perhitungan KNN</span>
+                                    <h3>Langkah Matematis Rekomendasi</h3>
+                                </div>
+                                <button type="button" class="modal-close" data-close-modal aria-label="Tutup modal">
+                                    <i class="fa-solid fa-xmark"></i>
+                                </button>
+                            </div>
+
+                            <div class="formula-box">
+                                d(x,y) = sqrt((MTKx - MTKy)^2 + (IPAx - IPAy)^2 + (IPSx - IPSy)^2 + (BINDOx - BINDOy)^2 + (PJOKx - PJOKy)^2 + (SBPx - SBPy)^2)
+                            </div>
+
+                            <div class="math-grid">
+                                <section>
+                                    <h4>Nilai Input Siswa</h4>
+                                    <div class="mini-table">
+                                        @foreach ($inputValues as $label => $value)
+                                            <div><span>{{ $label }}</span><strong>{{ $value }}</strong></div>
+                                        @endforeach
+                                    </div>
+                                </section>
+                                <section>
+                                    <h4>Voting Tetangga</h4>
+                                    <div class="mini-table">
+                                        @foreach ($voteCounts as $ekskul => $count)
+                                            <div><span>{{ $ekskul }}</span><strong>{{ $count }} suara</strong></div>
+                                        @endforeach
+                                    </div>
+                                </section>
+                            </div>
+
+                            <div class="table-container modal-table">
+                                <table class="neighbors-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Siswa Data Latih</th>
+                                            <th>Ekskul</th>
+                                            <th>Perhitungan Selisih Kuadrat</th>
+                                            <th>Total</th>
+                                            <th>Jarak</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach ($prediction->tetangga_terdekat as $neighbor)
+                                            <tr>
+                                                <td>{{ $neighbor['nama_siswa'] }}</td>
+                                                <td>{{ $neighbor['ekstrakurikuler'] }}</td>
+                                                <td>
+                                                    @foreach (($neighbor['selisih_kuadrat'] ?? []) as $label => $square)
+                                                        <span class="calc-chip">{{ $label }}: {{ $square }}</span>
+                                                    @endforeach
+                                                </td>
+                                                <td>{{ $neighbor['total_selisih_kuadrat'] ?? '-' }}</td>
+                                                <td>{{ number_format($neighbor['jarak'], 2) }}</td>
+                                            </tr>
+                                        @endforeach
+                                    </tbody>
+                                </table>
+                            </div>
+
+                            <div class="modal-result">
+                                Hasil rekomendasi: <strong>{{ $prediction->hasil_rekomendasi }}</strong>
+                            </div>
+                        </div>
+                    </div>
+                @endif
             </div>
         </div>
 
@@ -201,7 +287,6 @@
                                 <th>Waktu</th>
                                 <th>Nama</th>
                                 <th>Nilai Input</th>
-                                <th>Ekstrakurikuler</th>
                                 <th>K</th>
                                 <th>Hasil</th>
                             </tr>
@@ -211,13 +296,12 @@
                                 <tr>
                                     <td>{{ $history->created_at->format('d/m/Y H:i') }}</td>
                                     <td>{{ $history->nama_siswa ?: '-' }}</td>
-                                    <td>{{ $history->nilai_matematika }}, {{ $history->nilai_ipa }}, {{ $history->nilai_pjok }}, {{ $history->nilai_seni_budaya }}</td>
-                                    <td>{{ $history->minat }}</td>
+                                    <td>{{ $history->nilai_matematika }}, {{ $history->nilai_ipa }}, {{ $history->nilai_ips }}, {{ $history->nilai_bahasa_indonesia }}, {{ $history->nilai_pjok }}, {{ $history->nilai_seni_budaya }}</td>
                                     <td>K={{ $history->k_value }}</td>
                                     <td style="font-weight: 600; color: var(--success);">{{ $history->hasil_rekomendasi }}</td>
                                 </tr>
                             @empty
-                                <tr><td colspan="6">Belum ada riwayat prediksi.</td></tr>
+                                <tr><td colspan="5">Belum ada riwayat prediksi.</td></tr>
                             @endforelse
                         </tbody>
                     </table>

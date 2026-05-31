@@ -10,6 +10,8 @@ class KnnPredictionHistory extends Model
         'nama_siswa',
         'nilai_matematika',
         'nilai_ipa',
+        'nilai_ips',
+        'nilai_bahasa_indonesia',
         'nilai_pjok',
         'nilai_seni_budaya',
         'minat',

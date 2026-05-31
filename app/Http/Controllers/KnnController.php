@@ -15,20 +15,11 @@ class KnnController extends Controller
 {
     public function index(): View
     {
-        $ekskulOptions = KnnTrainingSample::query()
-            ->select('ekstrakurikuler')
-            ->distinct()
-            ->orderBy('ekstrakurikuler')
-            ->pluck('ekstrakurikuler');
-
         return view('knn', [
             'totalTraining' => KnnTrainingSample::count(),
             'totalHistories' => KnnPredictionHistory::count(),
             'trainingSamples' => KnnTrainingSample::orderBy('nama_siswa')->get(),
             'histories' => KnnPredictionHistory::latest()->take(10)->get(),
-            'ekskulOptions' => $ekskulOptions->isNotEmpty()
-                ? $ekskulOptions
-                : collect(['Voli', 'Futsal', 'KIR', 'Pramuka']),
             'defaultK' => 3,
         ]);
     }
@@ -71,10 +62,9 @@ class KnnController extends Controller
         $validated = $this->validatedPrediction($request);
         $predictionInput = [
             ...$validated,
-            'minat' => $validated['ekstrakurikuler'],
+            'minat' => 'Otomatis',
             'prestasi_non_akademik' => 0,
         ];
-        unset($predictionInput['ekstrakurikuler']);
 
         $samples = KnnTrainingSample::all();
 
@@ -87,12 +77,19 @@ class KnnController extends Controller
 
         $kValue = min((int) $validated['k_value'], $samples->count());
         $distances = $samples
-            ->map(fn (KnnTrainingSample $sample) => [
-                'nama_siswa' => $sample->nama_siswa,
-                'rank' => $sample->rank,
-                'ekstrakurikuler' => $sample->ekstrakurikuler,
-                'jarak' => $this->distance($validated, $sample),
-            ])
+            ->map(function (KnnTrainingSample $sample) use ($validated) {
+                $math = $this->distanceBreakdown($validated, $sample);
+
+                return [
+                    'nama_siswa' => $sample->nama_siswa,
+                    'rank' => $sample->rank,
+                    'ekstrakurikuler' => $sample->ekstrakurikuler,
+                    'nilai' => $math['sample_values'],
+                    'selisih_kuadrat' => $math['squared_differences'],
+                    'total_selisih_kuadrat' => $math['sum_squared'],
+                    'jarak' => $math['distance'],
+                ];
+            })
             ->sortBy([
                 ['jarak', 'asc'],
                 ['rank', 'asc'],
@@ -137,24 +134,52 @@ class KnnController extends Controller
             'nama_siswa' => ['nullable', 'string', 'max:100'],
             'nilai_matematika' => ['required', 'integer', 'between:0,100'],
             'nilai_ipa' => ['required', 'integer', 'between:0,100'],
+            'nilai_ips' => ['required', 'integer', 'between:0,100'],
+            'nilai_bahasa_indonesia' => ['required', 'integer', 'between:0,100'],
             'nilai_pjok' => ['required', 'integer', 'between:0,100'],
             'nilai_seni_budaya' => ['required', 'integer', 'between:0,100'],
-            'ekstrakurikuler' => ['required', 'string', 'max:100'],
             'k_value' => ['required', 'integer', 'min:1', 'max:15'],
         ]);
     }
 
     private function distance(array $input, KnnTrainingSample $sample): float
     {
-        $features = [
-            ((int) $input['nilai_matematika']) - $sample->nilai_matematika,
-            ((int) $input['nilai_ipa']) - $sample->nilai_ipa,
-            ((int) $input['nilai_pjok']) - $sample->nilai_pjok,
-            ((int) $input['nilai_seni_budaya']) - $sample->nilai_seni_budaya,
-            strcasecmp($input['ekstrakurikuler'], $sample->ekstrakurikuler) === 0 ? 0 : 25,
-        ];
+        return $this->distanceBreakdown($input, $sample)['distance'];
+    }
 
-        return sqrt(array_sum(array_map(fn (int $feature) => $feature ** 2, $features)));
+    private function distanceBreakdown(array $input, KnnTrainingSample $sample): array
+    {
+        $inputValues = [
+            'Matematika' => (int) $input['nilai_matematika'],
+            'IPA' => (int) $input['nilai_ipa'],
+            'IPS' => (int) $input['nilai_ips'],
+            'Bahasa Indonesia' => (int) $input['nilai_bahasa_indonesia'],
+            'PJOK' => (int) $input['nilai_pjok'],
+            'Seni Budaya' => (int) $input['nilai_seni_budaya'],
+        ];
+        $sampleValues = [
+            'Matematika' => $sample->nilai_matematika,
+            'IPA' => $sample->nilai_ipa,
+            'IPS' => $sample->nilai_ips,
+            'Bahasa Indonesia' => $sample->nilai_bahasa_indonesia,
+            'PJOK' => $sample->nilai_pjok,
+            'Seni Budaya' => $sample->nilai_seni_budaya,
+        ];
+        $squaredDifferences = [];
+
+        foreach ($inputValues as $label => $inputValue) {
+            $difference = $inputValue - $sampleValues[$label];
+            $squaredDifferences[$label] = $difference ** 2;
+        }
+
+        $sumSquared = array_sum($squaredDifferences);
+
+        return [
+            'sample_values' => $sampleValues,
+            'squared_differences' => $squaredDifferences,
+            'sum_squared' => $sumSquared,
+            'distance' => sqrt($sumSquared),
+        ];
     }
 
     /**
@@ -352,6 +377,8 @@ class KnnController extends Controller
             'nama_siswa' => $this->stringValue($data, ['nama_siswa', 'nama', 'siswa', 'nama_lengkap']),
             'nilai_matematika' => $this->scoreValue($data, ['nilai_matematika', 'matematika', 'mtk']),
             'nilai_ipa' => $this->scoreValue($data, ['nilai_ipa', 'ipa']),
+            'nilai_ips' => $this->scoreValue($data, ['nilai_ips', 'ips']),
+            'nilai_bahasa_indonesia' => $this->scoreValue($data, ['nilai_bahasa_indonesia', 'bahasa_indonesia', 'bindo', 'bindonesia', 'b_indonesia', 'b_indo', 'bahasa_indo']),
             'nilai_pjok' => $this->scoreValue($data, ['nilai_pjok', 'pjok', 'olahraga']),
             'nilai_seni_budaya' => $this->scoreValue($data, ['nilai_seni_budaya', 'seni_budaya', 'sbp', 'seni']),
             'minat' => $this->stringValue($data, ['minat', 'minat_siswa'], 'Tidak Dicantumkan'),

@@ -92,26 +92,26 @@ flowchart TD
         E --> F{Data valid?}
         F -- Tidak --> G[/Tampilkan pesan validasi/]
         G --> Z([Selesai])
-        F -- Ya --> H[Ambil kolom utama:<br>Nama, IPA, PJOK, SBP,<br>Rank, Ekskul]
-        H --> I[Simpan data latih<br>ke tabel knn_training_samples]
-        I --> J[Perbarui dashboard:<br>Total Data Latih]
+        F -- Ya --> H[Ambil kolom utama:<br>Nama, MTK, IPA, IPS,<br>BINDO, PJOK, SBP,<br>Rank, Ekskul]
+        H --> I[Hapus data training lama<br>dan simpan dataset baru]
+        I --> J[Perbarui dashboard<br>dan tabel Data Training]
     end
 
     J --> K[/Atur Parameter K<br>melalui slider/]
-    K --> L[/Menu Prediksi Siswa:<br>Input nilai dan ekstrakurikuler/]
+    K --> L[/Menu Prediksi Siswa:<br>Input nilai siswa/]
 
     subgraph V["Validasi Prediksi"]
         L --> M{Data latih tersedia<br>di MySQL?}
         M -- Tidak --> N[/Alert:<br>Isi Data Training terlebih dahulu/]
         N --> Z
-        M -- Ya --> O{Input prediksi lengkap?}
-        O -- Tidak --> Q[/Alert:<br>Lengkapi data siswa/]
+        M -- Ya --> O{Input nilai lengkap?}
+        O -- Tidak --> Q[/Alert:<br>Lengkapi nilai siswa/]
         Q --> Z
     end
 
     subgraph KNN["Proses Algoritma KNN"]
         O -- Ya --> R[Ambil seluruh data latih<br>dari tabel MySQL]
-        R --> S[Hitung jarak Euclidean<br>berdasarkan nilai dan<br>ekstrakurikuler]
+        R --> S[Hitung jarak Euclidean<br>berdasarkan MTK, IPA, IPS,<br>BINDO, PJOK, dan SBP]
         S --> T[Urutkan jarak<br>dari terkecil ke terbesar]
         T --> U[Ambil K tetangga terdekat]
         U --> W[Hitung voting mayoritas<br>berdasarkan Ekskul tetangga]
@@ -122,7 +122,7 @@ flowchart TD
 
     Y --> AB[/Output rekomendasi Ekskul/]
     AA --> AB
-    AB --> AC[Tampilkan tabel K tetangga:<br>Nama, Rank, Jarak Euclidean, Ekskul]
+    AB --> AC[Tampilkan tabel K tetangga<br>dan modal perhitungan matematis]
     AC --> AD[Simpan hasil ke tabel<br>knn_prediction_histories]
     AD --> AE([Selesai])
 

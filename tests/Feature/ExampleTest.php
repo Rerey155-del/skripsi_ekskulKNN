@@ -25,8 +25,8 @@ class ExampleTest extends TestCase
     public function test_training_data_can_be_imported_from_csv(): void
     {
         $csv = implode("\n", [
-            'Nama,IPA,PJOK,SBP,RANK,Ekskul',
-            'Alya,88,75,80,1,KIR',
+            'Nama,MTK,IPA,IPS,BINDO,PJOK,SBP,RANK,Ekskul',
+            'Alya,90,88,84,87,75,80,1,KIR',
         ]);
 
         $response = $this->post(route('knn.training.import'), [
@@ -36,7 +36,10 @@ class ExampleTest extends TestCase
         $response->assertRedirect(route('knn.index'));
         $this->assertDatabaseHas('knn_training_samples', [
             'nama_siswa' => 'Alya',
+            'nilai_matematika' => 90,
             'nilai_ipa' => 88,
+            'nilai_ips' => 84,
+            'nilai_bahasa_indonesia' => 87,
             'nilai_pjok' => 75,
             'nilai_seni_budaya' => 80,
             'rank' => 1,
@@ -50,8 +53,8 @@ class ExampleTest extends TestCase
         $csv = implode("\n", [
             'Laporan Nilai Siswa',
             'Semester Genap',
-            'No,NIS,NISN,Nama,JK,MTK,IPA,IPS,PJOK,SBP,Jumlah,RANK,Ekskul',
-            '1,251236,3122808372,AFFIFAH NADIRA,P,83,81,84,81,85,1276,15,Voli',
+            'No,NIS,NISN,Nama,JK,BINDO,MTK,IPA,IPS,PJOK,SBP,Jumlah,RANK,Ekskul',
+            '1,251236,3122808372,AFFIFAH NADIRA,P,80,83,81,84,81,85,1276,15,Voli',
         ]);
 
         $response = $this->post(route('knn.training.import'), [
@@ -63,6 +66,8 @@ class ExampleTest extends TestCase
             'nama_siswa' => 'AFFIFAH NADIRA',
             'nilai_matematika' => 83,
             'nilai_ipa' => 81,
+            'nilai_ips' => 84,
+            'nilai_bahasa_indonesia' => 80,
             'nilai_pjok' => 81,
             'nilai_seni_budaya' => 85,
             'rank' => 15,
@@ -70,12 +75,14 @@ class ExampleTest extends TestCase
         ]);
     }
 
-    public function test_prediction_uses_ekstrakurikuler_without_non_academic_achievement(): void
+    public function test_prediction_recommends_ekstrakurikuler_automatically_from_scores(): void
     {
         KnnTrainingSample::create([
             'nama_siswa' => 'Data Latih',
             'nilai_matematika' => 80,
             'nilai_ipa' => 81,
+            'nilai_ips' => 82,
+            'nilai_bahasa_indonesia' => 83,
             'nilai_pjok' => 81,
             'nilai_seni_budaya' => 85,
             'minat' => 'Tidak Dicantumkan',
@@ -86,9 +93,10 @@ class ExampleTest extends TestCase
 
         $response = $this->post(route('knn.predict'), [
             'nama_siswa' => 'Siswa Uji',
-            'ekstrakurikuler' => 'Voli',
             'nilai_matematika' => 80,
             'nilai_ipa' => 81,
+            'nilai_ips' => 82,
+            'nilai_bahasa_indonesia' => 83,
             'nilai_pjok' => 81,
             'nilai_seni_budaya' => 85,
             'k_value' => 1,
@@ -97,7 +105,7 @@ class ExampleTest extends TestCase
         $response->assertRedirect(route('knn.index'));
         $this->assertDatabaseHas('knn_prediction_histories', [
             'nama_siswa' => 'Siswa Uji',
-            'minat' => 'Voli',
+            'minat' => 'Otomatis',
             'prestasi_non_akademik' => 0,
             'hasil_rekomendasi' => 'Voli',
         ]);
@@ -110,6 +118,8 @@ class ExampleTest extends TestCase
             'nama_siswa' => 'Data Lama',
             'nilai_matematika' => 70,
             'nilai_ipa' => 70,
+            'nilai_ips' => 70,
+            'nilai_bahasa_indonesia' => 70,
             'nilai_pjok' => 70,
             'nilai_seni_budaya' => 70,
             'minat' => 'Tidak Dicantumkan',
@@ -119,9 +129,9 @@ class ExampleTest extends TestCase
         ]);
 
         $csv = implode("\n", [
-            'Nama,IPA,PJOK,SBP,RANK,Ekskul',
-            'Zahra,88,75,80,2,KIR',
-            'Alya,90,78,82,1,Voli',
+            'Nama,MTK,IPA,IPS,BINDO,PJOK,SBP,RANK,Ekskul',
+            'Zahra,86,88,80,82,75,80,2,KIR',
+            'Alya,88,90,81,84,78,82,1,Voli',
         ]);
 
         $this->post(route('knn.training.import'), [

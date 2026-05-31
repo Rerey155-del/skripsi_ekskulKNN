@@ -5,6 +5,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const pageTitle = document.getElementById('pageTitle');
     const trainingFile = document.getElementById('trainingFile');
     const selectedFileName = document.getElementById('selectedFileName');
+    const calculationModal = document.getElementById('calculationModal');
     const navItems = document.querySelectorAll('.nav-item[data-target]');
     const viewSections = document.querySelectorAll('.view-section');
 
@@ -34,6 +35,18 @@ document.addEventListener('DOMContentLoaded', () => {
     if (trainingFile && selectedFileName) {
         trainingFile.addEventListener('change', () => {
             selectedFileName.textContent = trainingFile.files[0]?.name || 'Belum ada file dipilih';
+        });
+    }
+
+    if (calculationModal) {
+        document.querySelectorAll('[data-close-modal]').forEach((button) => {
+            button.addEventListener('click', () => calculationModal.classList.remove('active'));
+        });
+
+        calculationModal.addEventListener('click', (event) => {
+            if (event.target === calculationModal) {
+                calculationModal.classList.remove('active');
+            }
         });
     }
 });
