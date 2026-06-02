@@ -76,7 +76,7 @@
         <div class="topbar">
             <div>
                 <h1>Flowchart Sistem Rekomendasi Ekskul KNN</h1>
-                <p>Alur disesuaikan dengan proses aplikasi Laravel dan database MySQL.</p>
+        <p>Alur disesuaikan dengan proses aplikasi Laravel dan database MySQL dengan 2 aktor: admin dan siswa.</p>
             </div>
             <a href="{{ route('knn.index') }}">Kembali ke Aplikasi</a>
         </div>
@@ -84,7 +84,16 @@
         <pre class="mermaid">
 flowchart TD
     A([Mulai]) --> B[Dashboard Sistem Rekomendasi Ekskul]
-    B --> C[/Menu Data Training:<br>Import file dataset siswa/]
+
+    subgraph A1["Aktor Admin"]
+        C[/Menu Data Training:<br>Import file dataset siswa/]
+        K[/Atur Parameter K<br>melalui slider/]
+        AD[/Lihat hasil rekomendasi,<br>riwayat, dan perhitungan/]
+    end
+
+    subgraph A2["Aktor Siswa"]
+        L[/Menu Data Uji:<br>Input nilai siswa/]
+    end
 
     subgraph P["Pengelolaan Dataset MySQL"]
         C --> D[Laravel membaca file .xlsx/.csv<br>dan memetakan header kolom]
@@ -97,8 +106,8 @@ flowchart TD
         I --> J[Perbarui dashboard<br>dan tabel Data Training]
     end
 
-    J --> K[/Atur Parameter K<br>melalui slider/]
-    K --> L[/Menu Prediksi Siswa:<br>Input nilai siswa/]
+    J --> K
+    K --> L
 
     subgraph V["Validasi Prediksi"]
         L --> M{Data latih tersedia<br>di MySQL?}
@@ -123,7 +132,7 @@ flowchart TD
     Y --> AB[/Output rekomendasi Ekskul/]
     AA --> AB
     AB --> AC[Tampilkan tabel K tetangga<br>dan modal perhitungan matematis]
-    AC --> AD[Simpan hasil ke tabel<br>knn_prediction_histories]
+    AC --> AD
     AD --> AE([Selesai])
 
     classDef startEnd fill:#dcfce7,stroke:#16a34a,stroke-width:2px,color:#14532d;
@@ -139,6 +148,7 @@ flowchart TD
     class F,M,O,X decision;
     class G,N,Q warning;
     class P,V,KNN group;
+    class A1,A2 group;
         </pre>
     </main>
 </body>

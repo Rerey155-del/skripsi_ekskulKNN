@@ -12,6 +12,80 @@
         $prediction = session('prediction_id') ? $histories->firstWhere('id', session('prediction_id')) : null;
     @endphp
 
+    @if (auth()->user()->role === 'siswa')
+    <main class="main-content" style="padding: 2rem; margin: 0 auto; width: min(1100px, 100%);">
+        <header>
+            <div>
+                <h1 id="pageTitle">Data Uji Siswa</h1>
+                <p style="color: var(--text-muted); margin-top: 0.25rem;">Masukkan nilai siswa untuk mendapatkan rekomendasi ekstrakurikuler.</p>
+            </div>
+            <div class="user-profile">
+                <span style="color: var(--text-muted); text-align:right;">
+                    {{ auth()->user()->name }}<br>
+                    <small>{{ ucfirst(auth()->user()->role) }}</small>
+                </span>
+                <form method="POST" action="{{ route('logout') }}">
+                    @csrf
+                    <button type="submit" class="modal-close" style="width:auto; padding:0 0.85rem;">
+                        <i class="fa-solid fa-right-from-bracket"></i>
+                    </button>
+                </form>
+                <div class="avatar"></div>
+            </div>
+        </header>
+
+        @if (session('success'))
+            <div class="alert success">{{ session('success') }}</div>
+        @endif
+
+        @if ($errors->any())
+            <div class="alert danger">
+                @foreach ($errors->all() as $error)
+                    <div>{{ $error }}</div>
+                @endforeach
+            </div>
+        @endif
+
+        <div class="glass-card" style="max-width: 900px; margin: 0 auto; width: 100%;">
+            <h2 class="card-title"><i class="fa-solid fa-user-plus"></i> Data Uji Siswa</h2>
+            <form method="POST" action="{{ route('knn.predict') }}">
+                @csrf
+                <div class="input-grid three">
+                    <div class="input-field"><label>Nama Siswa</label><input name="nama_siswa" value="{{ old('nama_siswa') }}" placeholder="Opsional"></div>
+                    <div class="input-field"><label>Matematika</label><input type="number" name="nilai_matematika" value="{{ old('nilai_matematika') }}" min="0" max="100" required></div>
+                    <div class="input-field"><label>IPA</label><input type="number" name="nilai_ipa" value="{{ old('nilai_ipa') }}" min="0" max="100" required></div>
+                    <div class="input-field"><label>IPS</label><input type="number" name="nilai_ips" value="{{ old('nilai_ips') }}" min="0" max="100" required></div>
+                    <div class="input-field"><label>Bahasa Indonesia</label><input type="number" name="nilai_bahasa_indonesia" value="{{ old('nilai_bahasa_indonesia') }}" min="0" max="100" required></div>
+                    <div class="input-field"><label>PJOK</label><input type="number" name="nilai_pjok" value="{{ old('nilai_pjok') }}" min="0" max="100" required></div>
+                    <div class="input-field"><label>Seni Budaya</label><input type="number" name="nilai_seni_budaya" value="{{ old('nilai_seni_budaya') }}" min="0" max="100" required></div>
+                </div>
+
+                <div class="setting-group">
+                    <div class="setting-header">
+                        <span class="setting-label">Parameter K</span>
+                        <span class="setting-value" id="kValue">{{ old('k_value', $defaultK) }}</span>
+                    </div>
+                    <input type="range" id="kSlider" name="k_value" min="1" max="15" value="{{ old('k_value', $defaultK) }}" step="2">
+                </div>
+
+                <button type="submit" class="btn-primary"><i class="fa-solid fa-wand-magic-sparkles"></i> Dapatkan Rekomendasi Ekskul</button>
+            </form>
+
+            @if ($prediction)
+                <div class="result-panel glass-card active" id="resultPanel" style="margin-top: 1.5rem;">
+                    <div class="result-label">Rekomendasi Ekstrakurikuler:</div>
+                    <div class="result-value">{{ $prediction->hasil_rekomendasi }}</div>
+                </div>
+            @else
+                <div class="result-panel glass-card" id="resultPanel" style="margin-top: 1.5rem;">
+                    <div class="result-label">Rekomendasi Ekstrakurikuler:</div>
+                    <div class="result-value">Belum ada hasil</div>
+                    <div style="color: var(--text-muted); margin-top: 0.75rem;">Data belum diproses oleh admin atau belum tersimpan di sistem.</div>
+                </div>
+            @endif
+        </div>
+    </main>
+    @else
     <aside class="sidebar">
         <div class="logo">
             <i class="fa-solid fa-cube"></i> EkskulKNN
@@ -19,9 +93,8 @@
         <ul class="nav-links">
             <li class="nav-item active" data-target="dashboard"><i class="fa-solid fa-chart-line"></i> Dashboard</li>
             <li class="nav-item" data-target="data-training"><i class="fa-solid fa-database"></i> Data Training</li>
-            <li class="nav-item" data-target="prediksi"><i class="fa-solid fa-users"></i> Prediksi Siswa</li>
+            <li class="nav-item" data-target="prediksi"><i class="fa-solid fa-users"></i> Data Uji</li>
             <li class="nav-item" data-target="riwayat"><i class="fa-solid fa-clock-rotate-left"></i> Riwayat</li>
-            <li class="nav-item" onclick="window.location.href='{{ route('knn.flowchart') }}'"><i class="fa-solid fa-diagram-project"></i> Flowchart</li>
         </ul>
     </aside>
 
@@ -32,7 +105,16 @@
                 <p style="color: var(--text-muted); margin-top: 0.25rem;">Laravel + MySQL untuk rekomendasi ekstrakurikuler dengan KNN</p>
             </div>
             <div class="user-profile">
-                <span style="color: var(--text-muted);">Admin/Guru</span>
+                <span style="color: var(--text-muted); text-align:right;">
+                    {{ auth()->user()->name }}<br>
+                    <small>{{ ucfirst(auth()->user()->role) }}</small>
+                </span>
+                <form method="POST" action="{{ route('logout') }}">
+                    @csrf
+                    <button type="submit" class="modal-close" style="width:auto; padding:0 0.85rem;">
+                        <i class="fa-solid fa-right-from-bracket"></i>
+                    </button>
+                </form>
                 <div class="avatar"></div>
             </div>
         </header>
@@ -73,6 +155,7 @@
             </div>
         </div>
 
+        @if (auth()->user()->role === 'admin')
         <div id="view-data-training" class="view-section dashboard-grid" style="grid-template-columns: 1fr;">
             <div class="glass-card" style="max-width: 1000px; margin: 0 auto; width: 100%;">
                 <h2 class="card-title"><i class="fa-solid fa-file-import"></i> Import Data Training ke MySQL</h2>
@@ -130,10 +213,12 @@
                 </div>
             </div>
         </div>
+        @endif
 
+        @if (auth()->user()->role === 'siswa')
         <div id="view-prediksi" class="view-section dashboard-grid" style="grid-template-columns: 1fr;">
             <div class="glass-card" style="max-width: 900px; margin: 0 auto; width: 100%;">
-                <h2 class="card-title"><i class="fa-solid fa-user-plus"></i> Prediksi Rekomendasi Siswa</h2>
+                <h2 class="card-title"><i class="fa-solid fa-user-plus"></i> Data Uji Siswa</h2>
 
                 <form method="POST" action="{{ route('knn.predict') }}">
                     @csrf
@@ -202,6 +287,14 @@
                         $voteCounts = collect($prediction->tetangga_terdekat)
                             ->countBy('ekstrakurikuler')
                             ->sortDesc();
+                        $distanceFormula = [
+                            'Matematika' => 'nilai_matematika',
+                            'IPA' => 'nilai_ipa',
+                            'IPS' => 'nilai_ips',
+                            'Bahasa Indonesia' => 'nilai_bahasa_indonesia',
+                            'PJOK' => 'nilai_pjok',
+                            'Seni Budaya' => 'nilai_seni_budaya',
+                        ];
                     @endphp
                     <div class="modal-backdrop active" id="calculationModal">
                         <div class="calculation-modal">
@@ -217,6 +310,20 @@
 
                             <div class="formula-box">
                                 d(x,y) = sqrt((MTKx - MTKy)^2 + (IPAx - IPAy)^2 + (IPSx - IPSy)^2 + (BINDOx - BINDOy)^2 + (PJOKx - PJOKy)^2 + (SBPx - SBPy)^2)
+                            </div>
+
+                            <div class="equation-box">
+                                <div class="equation-title">Rincian Hitung</div>
+                                <div class="equation-line">X = (MTK uji, IPA uji, IPS uji, BINDO uji, PJOK uji, SBP uji)</div>
+                                <div class="equation-line">Y = (MTK latih, IPA latih, IPS latih, BINDO latih, PJOK latih, SBP latih)</div>
+                                <div class="equation-line">d1 = (MTKx - MTKy)^2</div>
+                                <div class="equation-line">d2 = (IPAx - IPAy)^2</div>
+                                <div class="equation-line">d3 = (IPSx - IPSy)^2</div>
+                                <div class="equation-line">d4 = (BINDOx - BINDOy)^2</div>
+                                <div class="equation-line">d5 = (PJOKx - PJOKy)^2</div>
+                                <div class="equation-line">d6 = (SBPx - SBPy)^2</div>
+                                <div class="equation-line equation-total">d(x,y) = sqrt(d1 + d2 + d3 + d4 + d5 + d6)</div>
+                                <div class="equation-line equation-final">Hasil jarak ini digunakan untuk urutan tetangga terdekat.</div>
                             </div>
 
                             <div class="math-grid">
@@ -244,20 +351,44 @@
                                         <tr>
                                             <th>Siswa Data Latih</th>
                                             <th>Ekskul</th>
-                                            <th>Perhitungan Selisih Kuadrat</th>
+                                            <th>Rincian Hitung</th>
                                             <th>Total</th>
                                             <th>Jarak</th>
                                         </tr>
                                     </thead>
                                     <tbody>
                                         @foreach ($prediction->tetangga_terdekat as $neighbor)
+                                            @php
+                                                $detailRows = [];
+                                                foreach ($distanceFormula as $label => $field) {
+                                                    $inputValue = $inputValues[$label];
+                                                    $trainValue = $neighbor['nilai'][$label] ?? 0;
+                                                    $difference = $inputValue - $trainValue;
+                                                    $square = $neighbor['selisih_kuadrat'][$label] ?? ($difference ** 2);
+                                                    $detailRows[] = [
+                                                        'label' => $label,
+                                                        'input' => $inputValue,
+                                                        'train' => $trainValue,
+                                                        'difference' => $difference,
+                                                        'square' => $square,
+                                                    ];
+                                                }
+                                            @endphp
                                             <tr>
                                                 <td>{{ $neighbor['nama_siswa'] }}</td>
                                                 <td>{{ $neighbor['ekstrakurikuler'] }}</td>
                                                 <td>
-                                                    @foreach (($neighbor['selisih_kuadrat'] ?? []) as $label => $square)
-                                                        <span class="calc-chip">{{ $label }}: {{ $square }}</span>
-                                                    @endforeach
+                                                    <div class="calc-block">
+                                                        @foreach ($detailRows as $detail)
+                                                            <div class="calc-line">
+                                                                <div class="calc-title">{{ $detail['label'] }}</div>
+                                                                <div class="calc-expression">
+                                                                    {{ $detail['input'] }} - {{ $detail['train'] }} = {{ $detail['difference'] }}
+                                                                    <span class="calc-suffix">, kuadrat = {{ $detail['square'] }}</span>
+                                                                </div>
+                                                            </div>
+                                                        @endforeach
+                                                    </div>
                                                 </td>
                                                 <td>{{ $neighbor['total_selisih_kuadrat'] ?? '-' }}</td>
                                                 <td>{{ number_format($neighbor['jarak'], 2) }}</td>
@@ -308,7 +439,9 @@
                 </div>
             </div>
         </div>
+        @endif
     </main>
+    @endif
 
     <script src="{{ asset('js/knn_script.js') }}"></script>
 </body>

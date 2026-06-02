@@ -21,7 +21,7 @@ Jumlah data training valid yang terbaca adalah **32 data siswa**. Kolom `Rank` t
 
 ## 2. Data Uji Siswa
 
-Contoh data siswa yang dihitung:
+Data uji adalah data siswa yang dimasukkan pada halaman prediksi untuk dihitung rekomendasinya. Nilai berikut digunakan sebagai contoh data uji pada perhitungan ini:
 
 | Atribut | Nilai |
 |---|---:|
@@ -31,6 +31,12 @@ Contoh data siswa yang dihitung:
 | Bahasa Indonesia | 80 |
 | PJOK | 81 |
 | Seni Budaya | 85 |
+
+Catatan:
+
+- Data uji bukan diambil dari satu siswa dengan rank tertinggi.
+- Data uji adalah data siswa yang ingin diprediksi, bisa berasal dari input manual pada sistem.
+- Jika ingin ditulis lebih formal di skripsi, bagian ini bisa disebut sebagai "data siswa uji" atau "data input siswa yang akan direkomendasikan".
 
 Nilai `K` yang digunakan pada contoh perhitungan ini adalah **9**.
 
@@ -56,6 +62,43 @@ Keterangan:
 - Setiap siswa pada data training dihitung jaraknya satu per satu terhadap data uji.
 - Hasil rekomendasi diambil dari mayoritas ekstrakurikuler pada `K` tetangga terdekat.
 
+### Langkah Perhitungan Matematis
+
+Urutan hitungnya seperti ini:
+
+1. Tentukan data uji siswa yang akan diprediksi.
+2. Ambil satu data siswa dari data training.
+3. Hitung selisih tiap atribut antara data uji dan data training.
+4. Kuadratkan setiap selisih.
+5. Jumlahkan semua hasil kuadrat.
+6. Ambil akar kuadrat dari total tersebut.
+7. Ulangi ke seluruh data training.
+8. Urutkan jarak dari yang paling kecil.
+9. Ambil `K` data terdekat.
+10. Lakukan voting berdasarkan label ekstrakurikuler.
+
+### Bentuk Perhitungan Satu Baris
+
+Untuk satu data training, prosesnya dapat ditulis seperti ini:
+
+```text
+Selisih MTK   = MTK uji - MTK training
+Selisih IPA   = IPA uji - IPA training
+Selisih IPS   = IPS uji - IPS training
+Selisih BINDO = BINDO uji - BINDO training
+Selisih PJOK  = PJOK uji - PJOK training
+Selisih SBP   = SBP uji - SBP training
+
+Total = (Selisih MTK)^2 + (Selisih IPA)^2 + (Selisih IPS)^2 + (Selisih BINDO)^2 + (Selisih PJOK)^2 + (Selisih SBP)^2
+Jarak = sqrt(Total)
+```
+
+Artinya:
+
+- selisih tiap nilai menunjukkan seberapa jauh data uji dari data training,
+- semakin kecil selisihnya, semakin kecil jaraknya,
+- semakin kecil jarak, semakin mirip data tersebut dengan siswa uji.
+
 ## 4. Contoh Perhitungan 10 Data Training Pertama
 
 ### Data 1: ADAM ROMARTA
@@ -69,6 +112,30 @@ Data training:
 Perhitungan:
 
 ```text
+nilai data uji:
+MTK = 83
+IPA = 81
+IPS = 84
+BINDO = 80
+PJOK = 81
+SBP = 85
+
+selisih tiap atribut:
+83 - 84 = -1
+81 - 88 = -7
+84 - 88 = -4
+80 - 95 = -15
+81 - 88 = -7
+85 - 91 = -6
+
+kuadrat selisih:
+(-1)^2 = 1
+(-7)^2 = 49
+(-4)^2 = 16
+(-15)^2 = 225
+(-7)^2 = 49
+(-6)^2 = 36
+
 d = sqrt((83-84)^2 + (81-88)^2 + (84-88)^2 + (80-95)^2 + (81-88)^2 + (85-91)^2)
 d = sqrt(1 + 49 + 16 + 225 + 49 + 36)
 d = sqrt(376)

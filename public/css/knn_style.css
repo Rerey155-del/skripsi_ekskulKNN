@@ -534,10 +534,45 @@ input[type="range"] {
     font-size: 0.9rem;
     line-height: 1.6;
     margin-bottom: 1rem;
-    overflow-x: auto;
     padding: 0.9rem 1rem;
-    white-space: nowrap;
+    white-space: normal;
+    word-break: break-word;
 }
+
+.equation-box {
+    background: rgba(15, 23, 42, 0.55);
+    border: 1px solid rgba(99, 102, 241, 0.18);
+    border-radius: 0.7rem;
+    margin-bottom: 1rem;
+    padding: 1rem;
+}
+
+.equation-title {
+    color: #e2e8f0;
+    font-size: 0.95rem;
+    font-weight: 700;
+    margin-bottom: 0.75rem;
+}
+
+.equation-line {
+    color: #cbd5e1;
+    font-family: Consolas, monospace;
+    font-size: 0.92rem;
+    line-height: 1.55;
+    padding: 0.1rem 0;
+    word-break: break-word;
+}
+
+.equation-total {
+    color: #bfdbfe;
+    margin-top: 0.35rem;
+}
+
+.equation-final {
+    color: #a7f3d0;
+    font-weight: 700;
+}
+
 
 .math-grid {
     display: grid;
@@ -580,6 +615,36 @@ input[type="range"] {
     display: inline-block;
     margin: 0.15rem;
     padding: 0.25rem 0.5rem;
+}
+
+.calc-block {
+    display: grid;
+    gap: 0.7rem;
+}
+
+.calc-line {
+    background: rgba(15, 23, 42, 0.55);
+    border: 1px solid rgba(148, 163, 184, 0.18);
+    border-radius: 0.55rem;
+    padding: 0.65rem 0.75rem;
+}
+
+.calc-title {
+    color: var(--accent);
+    font-size: 0.76rem;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    margin-bottom: 0.3rem;
+    text-transform: uppercase;
+}
+
+.calc-expression {
+    color: #e2e8f0;
+    line-height: 1.45;
+}
+
+.calc-suffix {
+    color: var(--text-muted);
 }
 
 .modal-table {
