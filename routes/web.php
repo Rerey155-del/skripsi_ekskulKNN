@@ -11,6 +11,6 @@ Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 Route::middleware('auth')->group(function () {
     Route::get('/', [KnnController::class, 'index'])->name('knn.index');
     Route::post('/data-training/import', [KnnController::class, 'importTraining'])->middleware('role:admin')->name('knn.training.import');
-    Route::post('/prediksi', [KnnController::class, 'predict'])->middleware('role:siswa')->name('knn.predict');
+    Route::post('/prediksi', [KnnController::class, 'predict'])->name('knn.predict');
     Route::get('/flowchart', [KnnController::class, 'flowchart'])->name('knn.flowchart');
 });

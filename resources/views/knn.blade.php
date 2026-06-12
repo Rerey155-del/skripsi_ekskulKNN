@@ -215,7 +215,7 @@
         </div>
         @endif
 
-        @if (auth()->user()->role === 'siswa')
+        @if (auth()->user()->role === 'admin')
         <div id="view-prediksi" class="view-section dashboard-grid" style="grid-template-columns: 1fr;">
             <div class="glass-card" style="max-width: 900px; margin: 0 auto; width: 100%;">
                 <h2 class="card-title"><i class="fa-solid fa-user-plus"></i> Data Uji Siswa</h2>
@@ -309,20 +309,26 @@
                             </div>
 
                             <div class="formula-box">
-                                d(x,y) = sqrt((MTKx - MTKy)^2 + (IPAx - IPAy)^2 + (IPSx - IPSy)^2 + (BINDOx - BINDOy)^2 + (PJOKx - PJOKy)^2 + (SBPx - SBPy)^2)
+                                <div class="math-expr">
+                                    d(x, y) = <span class="math-sqrt"><span class="radical">&radic;</span><span class="radicand">(MTK<sub>x</sub> - MTK<sub>y</sub>)<sup>2</sup> + (IPA<sub>x</sub> - IPA<sub>y</sub>)<sup>2</sup> + (IPS<sub>x</sub> - IPS<sub>y</sub>)<sup>2</sup> + (BINDO<sub>x</sub> - BINDO<sub>y</sub>)<sup>2</sup> + (PJOK<sub>x</sub> - PJOK<sub>y</sub>)<sup>2</sup> + (SBP<sub>x</sub> - SBP<sub>y</sub>)<sup>2</sup></span></span>
+                                </div>
                             </div>
 
                             <div class="equation-box">
                                 <div class="equation-title">Rincian Hitung</div>
-                                <div class="equation-line">X = (MTK uji, IPA uji, IPS uji, BINDO uji, PJOK uji, SBP uji)</div>
-                                <div class="equation-line">Y = (MTK latih, IPA latih, IPS latih, BINDO latih, PJOK latih, SBP latih)</div>
-                                <div class="equation-line">d1 = (MTKx - MTKy)^2</div>
-                                <div class="equation-line">d2 = (IPAx - IPAy)^2</div>
-                                <div class="equation-line">d3 = (IPSx - IPSy)^2</div>
-                                <div class="equation-line">d4 = (BINDOx - BINDOy)^2</div>
-                                <div class="equation-line">d5 = (PJOKx - PJOKy)^2</div>
-                                <div class="equation-line">d6 = (SBPx - SBPy)^2</div>
-                                <div class="equation-line equation-total">d(x,y) = sqrt(d1 + d2 + d3 + d4 + d5 + d6)</div>
+                                <div class="equation-line">X = (MTK<sub>uji</sub>, IPA<sub>uji</sub>, IPS<sub>uji</sub>, BINDO<sub>uji</sub>, PJOK<sub>uji</sub>, SBP<sub>uji</sub>)</div>
+                                <div class="equation-line">Y = (MTK<sub>latih</sub>, IPA<sub>latih</sub>, IPS<sub>latih</sub>, BINDO<sub>latih</sub>, PJOK<sub>latih</sub>, SBP<sub>latih</sub>)</div>
+                                <div class="equation-line">d<sub>1</sub> = (MTK<sub>x</sub> - MTK<sub>y</sub>)<sup>2</sup></div>
+                                <div class="equation-line">d<sub>2</sub> = (IPA<sub>x</sub> - IPA<sub>y</sub>)<sup>2</sup></div>
+                                <div class="equation-line">d<sub>3</sub> = (IPS<sub>x</sub> - IPS<sub>y</sub>)<sup>2</sup></div>
+                                <div class="equation-line">d<sub>4</sub> = (BINDO<sub>x</sub> - BINDO<sub>y</sub>)<sup>2</sup></div>
+                                <div class="equation-line">d<sub>5</sub> = (PJOK<sub>x</sub> - PJOK<sub>y</sub>)<sup>2</sup></div>
+                                <div class="equation-line">d<sub>6</sub> = (SBP<sub>x</sub> - SBP<sub>y</sub>)<sup>2</sup></div>
+                                <div class="equation-line equation-total">
+                                    <div class="math-expr" style="font-size: 0.92rem; color: #bfdbfe;">
+                                        d(x, y) = <span class="math-sqrt"><span class="radical">&radic;</span><span class="radicand">d<sub>1</sub> + d<sub>2</sub> + d<sub>3</sub> + d<sub>4</sub> + d<sub>5</sub> + d<sub>6</sub></span></span>
+                                    </div>
+                                </div>
                                 <div class="equation-line equation-final">Hasil jarak ini digunakan untuk urutan tetangga terdekat.</div>
                             </div>
 
