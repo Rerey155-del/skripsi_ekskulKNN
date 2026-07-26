@@ -29,6 +29,28 @@ class KnnController extends Controller
         return view('flowchart');
     }
 
+    public function cetakLaporan(): View
+    {
+        $histories = KnnPredictionHistory::latest()->get();
+
+        return view('laporan_pdf', [
+            'histories' => $histories,
+            'title' => 'Laporan Rekapitulasi Rekomendasi Ekstrakurikuler - MTsN 2 Pesisir Selatan',
+            'isDetail' => false,
+        ]);
+    }
+
+    public function cetakDetailLaporan(int $id): View
+    {
+        $history = KnnPredictionHistory::findOrFail($id);
+
+        return view('laporan_pdf', [
+            'history' => $history,
+            'title' => 'Lembar Hasil Rekomendasi Siswa - MTsN 2 Pesisir Selatan',
+            'isDetail' => true,
+        ]);
+    }
+
     public function importTraining(Request $request): RedirectResponse
     {
         $request->validate([

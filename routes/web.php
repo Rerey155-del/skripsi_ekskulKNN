@@ -13,4 +13,6 @@ Route::middleware('auth')->group(function () {
     Route::post('/data-training/import', [KnnController::class, 'importTraining'])->middleware('role:admin')->name('knn.training.import');
     Route::post('/prediksi', [KnnController::class, 'predict'])->name('knn.predict');
     Route::get('/flowchart', [KnnController::class, 'flowchart'])->name('knn.flowchart');
+    Route::get('/laporan/cetak', [KnnController::class, 'cetakLaporan'])->name('knn.laporan.cetak');
+    Route::get('/laporan/cetak/{id}', [KnnController::class, 'cetakDetailLaporan'])->name('knn.laporan.cetak-detail');
 });

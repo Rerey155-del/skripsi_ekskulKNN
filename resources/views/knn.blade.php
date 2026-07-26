@@ -15,9 +15,12 @@
     @if (auth()->user()->role === 'siswa')
     <main class="main-content" style="padding: 2rem; margin: 0 auto; width: min(1100px, 100%);">
         <header>
-            <div>
-                <h1 id="pageTitle">Data Uji Siswa</h1>
-                <p style="color: var(--text-muted); margin-top: 0.25rem;">Masukkan nilai siswa untuk mendapatkan rekomendasi ekstrakurikuler.</p>
+            <div style="display: flex; align-items: center; gap: 1rem;">
+                <img src="{{ asset('assets/MTSN 2 Pesisir Selatan.png') }}" alt="Logo MTsN 2 Pesisir Selatan" style="height: 52px; width: auto; object-fit: contain; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.2));">
+                <div>
+                    <h1 id="pageTitle">MTsN 2 Pesisir Selatan</h1>
+                    <p style="color: var(--text-muted); margin-top: 0.25rem;">Rekomendasi Ekstrakurikuler Siswa (KNN)</p>
+                </div>
             </div>
             <div class="user-profile">
                 <span style="color: var(--text-muted); text-align:right;">
@@ -75,6 +78,11 @@
                 <div class="result-panel glass-card active" id="resultPanel" style="margin-top: 1.5rem;">
                     <div class="result-label">Rekomendasi Ekstrakurikuler:</div>
                     <div class="result-value">{{ $prediction->hasil_rekomendasi }}</div>
+                    <div style="margin-top: 1rem;">
+                        <a href="{{ route('knn.laporan.cetak-detail', $prediction->id) }}" target="_blank" class="btn-primary" style="display:inline-flex; align-items:center; gap:0.5rem; text-decoration:none; padding:0.6rem 1.2rem; font-size:0.9rem;">
+                            <i class="fa-solid fa-file-pdf"></i> Cetak Hasil Rekomendasi (PDF)
+                        </a>
+                    </div>
                 </div>
             @else
                 <div class="result-panel glass-card" id="resultPanel" style="margin-top: 1.5rem;">
@@ -87,8 +95,9 @@
     </main>
     @else
     <aside class="sidebar">
-        <div class="logo">
-            <i class="fa-solid fa-cube"></i> EkskulKNN
+        <div class="logo" style="display: flex; align-items: center; gap: 0.75rem;">
+            <img src="{{ asset('assets/MTSN 2 Pesisir Selatan.png') }}" alt="Logo MTsN 2 Pesisir Selatan" style="height: 38px; width: auto; object-fit: contain; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.2));">
+            <span style="font-size: 1.1rem; line-height: 1.2;">MTsN 2 Pesisir Selatan</span>
         </div>
         <ul class="nav-links">
             <li class="nav-item active" data-target="dashboard"><i class="fa-solid fa-chart-line"></i> Dashboard</li>
@@ -100,9 +109,12 @@
 
     <main class="main-content">
         <header>
-            <div>
-                <h1 id="pageTitle">Dashboard</h1>
-                <p style="color: var(--text-muted); margin-top: 0.25rem;">Laravel + MySQL untuk rekomendasi ekstrakurikuler dengan KNN</p>
+            <div style="display: flex; align-items: center; gap: 1rem;">
+                <img src="{{ asset('assets/MTSN 2 Pesisir Selatan.png') }}" alt="Logo MTsN 2 Pesisir Selatan" style="height: 48px; width: auto; object-fit: contain; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.2));">
+                <div>
+                    <h1 id="pageTitle">Dashboard Admin</h1>
+                    <p style="color: var(--text-muted); margin-top: 0.25rem;">MTsN 2 Pesisir Selatan - Sistem Rekomendasi Ekstrakurikuler dengan KNN</p>
+                </div>
             </div>
             <div class="user-profile">
                 <span style="color: var(--text-muted); text-align:right;">
@@ -132,10 +144,12 @@
         @endif
 
         <div id="view-dashboard" class="view-section active dashboard-grid" style="grid-template-columns: 1fr;">
-            <div class="glass-card" style="text-align: center; padding: 4rem 2rem;">
-                <h2 style="font-size: 2rem; margin-bottom: 1rem;">Sistem Rekomendasi Ekstrakurikuler</h2>
+            <div class="glass-card" style="text-align: center; padding: 3.5rem 2rem;">
+                <img src="{{ asset('assets/MTSN 2 Pesisir Selatan.png') }}" alt="Logo MTsN 2 Pesisir Selatan" style="max-height: 110px; width: auto; object-fit: contain; margin-bottom: 1.5rem; filter: drop-shadow(0 4px 10px rgba(0,0,0,0.3));">
+                <h2 style="font-size: 1.8rem; margin-bottom: 0.5rem;">MTsN 2 Pesisir Selatan</h2>
+                <p style="color: var(--accent); font-weight: 600; font-size: 1.1rem; margin-bottom: 1rem;">Sistem Rekomendasi Ekstrakurikuler (K-Nearest Neighbor)</p>
                 <p style="color: var(--text-muted); max-width: 720px; margin: 0 auto; line-height: 1.6;">
-                    Rumusan masalah difokuskan pada pembuatan sistem berbasis Laravel, penggunaan data siswa dari database MySQL, dan penerapan K-Nearest Neighbor memakai nilai akademik.
+                    Selamat datang di Panel Sistem Rekomendasi Ekstrakurikuler MTsN 2 Pesisir Selatan. Sistem ini menggunakan algoritma K-Nearest Neighbor untuk menentukan ekstrakurikuler yang sesuai berdasarkan nilai akademik siswa.
                 </p>
 
                 <div class="stats-row">
@@ -246,6 +260,13 @@
                 <div class="result-panel glass-card {{ $prediction ? 'active' : '' }}" id="resultPanel">
                     <div class="result-label">Rekomendasi Ekstrakurikuler:</div>
                     <div class="result-value">{{ $prediction?->hasil_rekomendasi ?? '-' }}</div>
+                    @if ($prediction)
+                        <div style="margin-top: 0.75rem; text-align: center;">
+                            <a href="{{ route('knn.laporan.cetak-detail', $prediction->id) }}" target="_blank" class="btn-primary" style="display:inline-flex; align-items:center; gap:0.5rem; text-decoration:none; padding:0.5rem 1rem; font-size:0.85rem;">
+                                <i class="fa-solid fa-file-pdf"></i> Cetak Lembar Rekomendasi (PDF)
+                            </a>
+                        </div>
+                    @endif
 
                     <h3 style="margin-top: 1.5rem; font-size: 1rem; color: #fff; text-align: left;"><i class="fa-solid fa-users"></i> K-Tetangga Terdekat</h3>
                     <div class="table-container">
@@ -415,7 +436,12 @@
 
         <div id="view-riwayat" class="view-section dashboard-grid" style="grid-template-columns: 1fr;">
             <div class="glass-card" style="max-width: 1000px; margin: 0 auto; width: 100%;">
-                <h2 class="card-title"><i class="fa-solid fa-clock-rotate-left"></i> Riwayat Prediksi dari MySQL</h2>
+                <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 1rem; margin-bottom: 1.5rem;">
+                    <h2 class="card-title" style="margin-bottom: 0;"><i class="fa-solid fa-clock-rotate-left"></i> Riwayat Prediksi dari MySQL</h2>
+                    <a href="{{ route('knn.laporan.cetak') }}" target="_blank" class="btn-primary" style="display:inline-flex; align-items:center; gap:0.5rem; text-decoration:none; padding:0.65rem 1.25rem; font-size:0.9rem;">
+                        <i class="fa-solid fa-file-pdf"></i> Cetak Laporan Rekapitulasi (PDF)
+                    </a>
+                </div>
 
                 <div class="table-container">
                     <table class="neighbors-table">
@@ -426,6 +452,7 @@
                                 <th>Nilai Input</th>
                                 <th>K</th>
                                 <th>Hasil</th>
+                                <th style="text-align: center;">Aksi</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -436,9 +463,14 @@
                                     <td>{{ $history->nilai_matematika }}, {{ $history->nilai_ipa }}, {{ $history->nilai_ips }}, {{ $history->nilai_bahasa_indonesia }}, {{ $history->nilai_pjok }}, {{ $history->nilai_seni_budaya }}</td>
                                     <td>K={{ $history->k_value }}</td>
                                     <td style="font-weight: 600; color: var(--success);">{{ $history->hasil_rekomendasi }}</td>
+                                    <td style="text-align: center;">
+                                        <a href="{{ route('knn.laporan.cetak-detail', $history->id) }}" target="_blank" class="modal-close" style="width:auto; padding:0.35rem 0.75rem; font-size:0.8rem; text-decoration:none; display:inline-flex; align-items:center; gap:0.3rem;" title="Cetak Surat Rekomendasi Siswa">
+                                            <i class="fa-solid fa-print"></i> Cetak
+                                        </a>
+                                    </td>
                                 </tr>
                             @empty
-                                <tr><td colspan="5">Belum ada riwayat prediksi.</td></tr>
+                                <tr><td colspan="6">Belum ada riwayat prediksi.</td></tr>
                             @endforelse
                         </tbody>
                     </table>

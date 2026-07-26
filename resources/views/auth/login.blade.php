@@ -9,8 +9,11 @@
 </head>
 <body style="display:flex; align-items:center; justify-content:center; min-height:100vh; padding:24px;">
     <div class="glass-card" style="width:min(440px,100%);">
-        <h1 style="font-size:1.6rem; margin-bottom:0.5rem;">Login EkskulKNN</h1>
-        <p style="color:var(--text-muted); margin-bottom:1.25rem;">Masuk sebagai admin atau siswa sesuai akun yang terdaftar.</p>
+        <div style="text-align: center; margin-bottom: 1.5rem;">
+            <img src="{{ asset('assets/MTSN 2 Pesisir Selatan.png') }}" alt="Logo MTsN 2 Pesisir Selatan" style="max-height: 90px; width: auto; object-fit: contain; margin-bottom: 0.75rem; filter: drop-shadow(0 4px 6px rgba(0,0,0,0.3));">
+            <h1 style="font-size:1.5rem; margin-bottom:0.35rem;">MTsN 2 Pesisir Selatan</h1>
+            <p style="color:var(--text-muted); font-size: 0.9rem;">Sistem Rekomendasi Ekstrakurikuler (KNN)</p>
+        </div>
 
         @if ($errors->any())
             <div class="alert danger" style="margin-bottom:1rem;">
@@ -24,11 +27,11 @@
             @csrf
             <div class="input-field" style="margin-bottom:1rem;">
                 <label>Email</label>
-                <input type="email" name="email" value="{{ old('email') }}" required autofocus>
+                <input type="email" name="email" value="{{ old('email') }}" required autofocus placeholder="Masukkan email">
             </div>
             <div class="input-field" style="margin-bottom:1rem;">
                 <label>Password</label>
-                <input type="password" name="password" required>
+                <input type="password" name="password" required placeholder="Masukkan password">
             </div>
             <label style="display:flex; align-items:center; gap:0.5rem; color:var(--text-muted); margin-bottom:1.25rem;">
                 <input type="checkbox" name="remember" value="1" style="width:auto;">
