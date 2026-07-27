@@ -1,0 +1,1391 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sketsa Hi-Fi Hitam Putih (Figma Style) - Bab 4 Skripsi</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-canvas: #f1f3f5;
+            --bg-frame: #ffffff;
+            --bg-subtle: #f8f9fa;
+            --border-color: #d1d5db;
+            --border-dark: #111827;
+            --text-main: #111827;
+            --text-muted: #6b7280;
+            --primary-black: #000000;
+            --secondary-black: #1f2937;
+            --shadow-sm: 0 1px 3px rgba(0,0,0,0.1);
+            --shadow-md: 0 4px 6px -1px rgba(0,0,0,0.1);
+            --shadow-lg: 0 10px 15px -3px rgba(0,0,0,0.1);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-canvas);
+            color: var(--text-main);
+            padding: 30px 15px;
+            line-height: 1.5;
+        }
+
+        .header-bar {
+            max-width: 1100px;
+            margin: 0 auto 30px auto;
+            background: #ffffff;
+            padding: 20px 30px;
+            border-radius: 12px;
+            border: 2px solid var(--border-dark);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: var(--shadow-md);
+        }
+
+        .header-bar h1 {
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--primary-black);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .header-bar p {
+            font-size: 13px;
+            color: var(--text-muted);
+        }
+
+        .action-btns {
+            display: flex;
+            gap: 10px;
+        }
+
+        .btn-action {
+            background: var(--primary-black);
+            color: #ffffff;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 6px;
+            font-weight: 600;
+            font-size: 13px;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            transition: all 0.2s ease;
+        }
+
+        .btn-action:hover {
+            background: #333333;
+        }
+
+        .btn-outline {
+            background: transparent;
+            color: var(--primary-black);
+            border: 2px solid var(--primary-black);
+        }
+
+        .btn-outline:hover {
+            background: #f1f3f5;
+        }
+
+        .figma-container {
+            max-width: 1100px;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            gap: 50px;
+        }
+
+        .figma-frame-wrapper {
+            background: transparent;
+        }
+
+        .figma-frame-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 12px;
+        }
+
+        .figma-tag {
+            font-size: 14px;
+            font-weight: 700;
+            color: var(--primary-black);
+            background: #ffffff;
+            padding: 4px 12px;
+            border-radius: 6px;
+            border: 1.5px solid var(--border-dark);
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .figma-tag::before {
+            content: '';
+            width: 8px;
+            height: 8px;
+            background: var(--primary-black);
+            border-radius: 50%;
+        }
+
+        .figma-frame {
+            background: var(--bg-frame);
+            border: 2px solid var(--border-dark);
+            border-radius: 12px;
+            box-shadow: var(--shadow-lg);
+            overflow: hidden;
+            position: relative;
+        }
+
+        /* --- SCREEN 1: LOGIN --- */
+        .login-canvas {
+            min-height: 520px;
+            background: #f3f4f6;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 40px 20px;
+            position: relative;
+            background-image: radial-gradient(#d1d5db 1px, transparent 1px);
+            background-size: 16px 16px;
+        }
+
+        .login-card {
+            background: #ffffff;
+            width: 100%;
+            max-width: 380px;
+            padding: 32px;
+            border-radius: 12px;
+            border: 2px solid var(--border-dark);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.08);
+        }
+
+        .login-title {
+            font-size: 22px;
+            font-weight: 700;
+            color: var(--primary-black);
+            margin-bottom: 6px;
+        }
+
+        .login-subtitle {
+            font-size: 13px;
+            color: var(--text-muted);
+            margin-bottom: 24px;
+        }
+
+        .form-group {
+            margin-bottom: 18px;
+        }
+
+        .form-label {
+            display: block;
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--primary-black);
+            margin-bottom: 6px;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1.5px solid var(--border-color);
+            border-radius: 6px;
+            font-size: 14px;
+            background: var(--bg-subtle);
+            color: var(--text-main);
+            outline: none;
+        }
+
+        .form-input:focus {
+            border-color: var(--border-dark);
+            background: #ffffff;
+        }
+
+        .checkbox-group {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 24px;
+        }
+
+        .checkbox-group input {
+            width: 16px;
+            height: 16px;
+            accent-color: var(--primary-black);
+            cursor: pointer;
+        }
+
+        .checkbox-group label {
+            font-size: 13px;
+            color: var(--text-main);
+            cursor: pointer;
+        }
+
+        .btn-full {
+            width: 100%;
+            padding: 12px;
+            background: var(--primary-black);
+            color: #ffffff;
+            border: none;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: 700;
+            cursor: pointer;
+            text-align: center;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        /* --- DASHBOARD LAYOUT (SCREENS 2, 3, 4, 6) --- */
+        .app-layout {
+            display: flex;
+            min-height: 580px;
+        }
+
+        .app-sidebar {
+            width: 230px;
+            background: #ffffff;
+            border-right: 2px solid var(--border-dark);
+            padding: 24px 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+            flex-shrink: 0;
+        }
+
+        .brand-logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-weight: 800;
+            font-size: 16px;
+            color: var(--primary-black);
+            padding: 0 8px;
+        }
+
+        .brand-icon {
+            width: 24px;
+            height: 24px;
+            border: 2px solid var(--primary-black);
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 900;
+            font-size: 12px;
+        }
+
+        .nav-list {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 12px;
+            border-radius: 6px;
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text-muted);
+            border: 1.5px solid transparent;
+            cursor: pointer;
+        }
+
+        .nav-item.active {
+            background: var(--primary-black);
+            color: #ffffff;
+            border-color: var(--primary-black);
+        }
+
+        .nav-icon {
+            width: 16px;
+            height: 16px;
+            display: inline-block;
+            border: 1.5px solid currentColor;
+            border-radius: 3px;
+        }
+
+        .app-main {
+            flex: 1;
+            background: #f9fafb;
+            padding: 28px 32px;
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+        }
+
+        .top-navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-bottom: 18px;
+            border-bottom: 2px dashed var(--border-color);
+        }
+
+        .page-title {
+            font-size: 22px;
+            font-weight: 800;
+            color: var(--primary-black);
+            line-height: 1.2;
+        }
+
+        .page-subtitle {
+            font-size: 12.5px;
+            color: var(--text-muted);
+        }
+
+        .user-profile {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 12px;
+            text-align: right;
+        }
+
+        .user-avatar {
+            width: 34px;
+            height: 34px;
+            border-radius: 50%;
+            border: 2px solid var(--border-dark);
+            background: #e5e7eb;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 12px;
+        }
+
+        .btn-logout-icon {
+            width: 32px;
+            height: 32px;
+            border: 1.5px solid var(--border-dark);
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            font-weight: 700;
+        }
+
+        /* --- DASHBOARD CONTENT --- */
+        .dash-card {
+            background: #ffffff;
+            border: 2px solid var(--border-dark);
+            border-radius: 10px;
+            padding: 24px;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .dash-card-header {
+            text-align: center;
+            max-width: 650px;
+            margin: 0 auto 28px auto;
+        }
+
+        .dash-card-header h2 {
+            font-size: 20px;
+            font-weight: 800;
+            color: var(--primary-black);
+            margin-bottom: 8px;
+        }
+
+        .dash-card-header p {
+            font-size: 13px;
+            color: var(--text-muted);
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 16px;
+        }
+
+        .stat-box {
+            background: var(--bg-subtle);
+            border: 1.5px solid var(--border-dark);
+            border-radius: 8px;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 36px;
+            font-weight: 800;
+            color: var(--primary-black);
+            line-height: 1;
+            margin-bottom: 6px;
+        }
+
+        .stat-label {
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--text-muted);
+        }
+
+        /* --- DATA TRAINING & TABLES --- */
+        .upload-zone {
+            border: 2px dashed var(--border-dark);
+            border-radius: 8px;
+            padding: 30px;
+            text-align: center;
+            background: #ffffff;
+            margin-bottom: 16px;
+        }
+
+        .upload-icon {
+            width: 44px;
+            height: 44px;
+            margin: 0 auto 10px auto;
+            border: 2px solid var(--border-dark);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            font-weight: bold;
+            background: var(--bg-subtle);
+        }
+
+        .upload-title {
+            font-size: 14px;
+            font-weight: 700;
+            color: var(--primary-black);
+        }
+
+        .upload-sub {
+            font-size: 12px;
+            color: var(--text-muted);
+            margin-top: 2px;
+        }
+
+        .upload-status {
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--primary-black);
+            margin-top: 8px;
+        }
+
+        .info-format-box {
+            background: var(--bg-subtle);
+            border: 1.5px solid var(--border-color);
+            padding: 10px 14px;
+            border-radius: 6px;
+            font-size: 12px;
+            font-family: 'JetBrains Mono', monospace;
+            color: var(--text-main);
+            margin-bottom: 16px;
+            overflow-x: auto;
+            white-space: nowrap;
+        }
+
+        .table-container {
+            border: 1.5px solid var(--border-dark);
+            border-radius: 6px;
+            overflow: hidden;
+            background: #ffffff;
+        }
+
+        .wireframe-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 12px;
+            text-align: left;
+        }
+
+        .wireframe-table th {
+            background: var(--primary-black);
+            color: #ffffff;
+            padding: 10px 12px;
+            font-weight: 600;
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 0.4px;
+            border-right: 1px solid #333333;
+        }
+
+        .wireframe-table th:last-child {
+            border-right: none;
+        }
+
+        .wireframe-table td {
+            padding: 16px 12px;
+            color: var(--text-muted);
+            border-top: 1px solid var(--border-color);
+            text-align: center;
+        }
+
+        /* --- DATA UJI CONTENT --- */
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 16px;
+            margin-bottom: 20px;
+        }
+
+        .slider-group {
+            margin-bottom: 24px;
+            background: var(--bg-subtle);
+            padding: 16px;
+            border-radius: 8px;
+            border: 1.5px solid var(--border-color);
+        }
+
+        .slider-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+            font-size: 13px;
+            font-weight: 700;
+        }
+
+        .slider-bar-track {
+            height: 8px;
+            background: #e5e7eb;
+            border-radius: 4px;
+            position: relative;
+            border: 1px solid var(--border-color);
+        }
+
+        .slider-bar-fill {
+            width: 25%;
+            height: 100%;
+            background: var(--primary-black);
+            border-radius: 4px;
+        }
+
+        .slider-thumb {
+            width: 18px;
+            height: 18px;
+            background: #ffffff;
+            border: 2px solid var(--primary-black);
+            border-radius: 50%;
+            position: absolute;
+            top: -5px;
+            left: 25%;
+            transform: translateX(-50%);
+            box-shadow: var(--shadow-sm);
+        }
+
+        /* --- ALERT BANNER --- */
+        .alert-banner {
+            background: var(--bg-subtle);
+            border: 1.5px solid var(--border-dark);
+            border-radius: 8px;
+            padding: 12px 16px;
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--primary-black);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .alert-banner::before {
+            content: '✓';
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 20px;
+            height: 20px;
+            background: var(--primary-black);
+            color: #ffffff;
+            border-radius: 50%;
+            font-size: 11px;
+            font-weight: 900;
+        }
+
+        /* --- SCREEN 5: MODAL MATEMATIS --- */
+        .modal-canvas {
+            background: #e5e7eb;
+            padding: 30px 20px;
+            min-height: 650px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+
+        .modal-backdrop {
+            position: absolute;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.4);
+            backdrop-filter: blur(2px);
+        }
+
+        .modal-card {
+            position: relative;
+            z-index: 10;
+            background: #ffffff;
+            border: 2.5px solid var(--border-dark);
+            border-radius: 12px;
+            width: 100%;
+            max-width: 780px;
+            padding: 24px;
+            box-shadow: 0 20px 25px -5px rgba(0,0,0,0.2);
+            max-height: 600px;
+            overflow-y: auto;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 16px;
+            padding-bottom: 12px;
+            border-bottom: 2px solid var(--border-dark);
+        }
+
+        .modal-badge {
+            font-size: 10px;
+            font-weight: 800;
+            color: var(--primary-black);
+            background: var(--bg-subtle);
+            border: 1.5px solid var(--border-dark);
+            padding: 2px 8px;
+            border-radius: 4px;
+            letter-spacing: 0.5px;
+            display: inline-block;
+            margin-bottom: 4px;
+        }
+
+        .modal-title {
+            font-size: 18px;
+            font-weight: 800;
+            color: var(--primary-black);
+        }
+
+        .btn-close {
+            background: transparent;
+            border: 1.5px solid var(--border-dark);
+            width: 28px;
+            height: 28px;
+            border-radius: 6px;
+            font-weight: 800;
+            font-size: 14px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .math-box {
+            background: #f8fafc;
+            border: 1.5px solid var(--border-dark);
+            border-radius: 8px;
+            padding: 14px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 11.5px;
+            color: var(--primary-black);
+            margin-bottom: 16px;
+            overflow-x: auto;
+        }
+
+        .math-box-title {
+            font-size: 12px;
+            font-weight: 700;
+            font-family: 'Inter', sans-serif;
+            margin-bottom: 8px;
+            color: var(--primary-black);
+        }
+
+        .modal-tables-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+        }
+
+        .table-mini {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 12px;
+            border: 1.5px solid var(--border-dark);
+            border-radius: 6px;
+            overflow: hidden;
+        }
+
+        .table-mini th {
+            background: var(--bg-subtle);
+            color: var(--primary-black);
+            padding: 8px 12px;
+            font-weight: 700;
+            border-bottom: 1.5px solid var(--border-dark);
+            text-align: left;
+        }
+
+        .table-mini td {
+            padding: 8px 12px;
+            border-bottom: 1px solid var(--border-color);
+            color: var(--text-main);
+        }
+
+        .table-mini tr:last-child td {
+            border-bottom: none;
+        }
+
+        .font-bold {
+            font-weight: 700;
+        }
+
+        .text-right {
+            text-align: right;
+        }
+
+        /* --- SCREEN 7: PORTAL SISWA (NO SIDEBAR LAYOUT) --- */
+        .portal-layout {
+            background: #f9fafb;
+            padding: 36px 40px;
+            min-height: 580px;
+            display: flex;
+            flex-direction: column;
+            gap: 28px;
+        }
+
+        .portal-container {
+            max-width: 780px;
+            margin: 0 auto;
+            width: 100%;
+        }
+
+        /* PRINT STYLES FOR BAB 4 DOCUMENTATION */
+        @media print {
+            body {
+                background: #ffffff;
+                padding: 0;
+            }
+            .header-bar, .action-btns {
+                display: none !important;
+            }
+            .figma-container {
+                gap: 40px;
+            }
+            .figma-frame-wrapper {
+                page-break-after: always;
+            }
+            .figma-frame {
+                border: 2px solid #000000 !important;
+                box-shadow: none !important;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- CONTROL HEADER -->
+    <div class="header-bar">
+        <div>
+            <h1>Sketsa Hi-Fi Hitam Putih (7 Tampilan Bab 4 Skripsi)</h1>
+            <p>Rancangan Antarmuka Sistem Rekomendasi Ekstrakurikuler dengan Algoritma KNN</p>
+        </div>
+        <div class="action-btns">
+            <button class="btn-action btn-outline" onclick="window.print()">
+                🖨️ Cetak / Simpan PDF
+            </button>
+        </div>
+    </div>
+
+    <div class="figma-container">
+
+        <!-- SCREEN 1: LOGIN -->
+        <div class="figma-frame-wrapper" id="frame-1">
+            <div class="figma-frame-header">
+                <span class="figma-tag">Gambar 4.1 Sketsa Hi-Fi Halaman Login</span>
+                <span style="font-size: 12px; color: var(--text-muted); font-weight: 600;">Ukuran Screen: 1280 × 720px</span>
+            </div>
+            <div class="figma-frame">
+                <div class="login-canvas">
+                    <div class="login-card">
+                        <h2 class="login-title">Login EkskulKNN</h2>
+                        <p class="login-subtitle">Masuk sebagai admin atau siswa sesuai akun yang terdaftar.</p>
+                        
+                        <div class="form-group">
+                            <label class="form-label">Email</label>
+                            <input type="text" class="form-input" placeholder="Masukkan email anda..." value="">
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Password</label>
+                            <input type="password" class="form-input" placeholder="••••••••" value="">
+                        </div>
+
+                        <div class="checkbox-group">
+                            <input type="checkbox" id="remember">
+                            <label for="remember">Ingat saya</label>
+                        </div>
+
+                        <button class="btn-full">Masuk</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SCREEN 2: DASHBOARD -->
+        <div class="figma-frame-wrapper" id="frame-2">
+            <div class="figma-frame-header">
+                <span class="figma-tag">Gambar 4.2 Sketsa Hi-Fi Halaman Dashboard Utama</span>
+                <span style="font-size: 12px; color: var(--text-muted); font-weight: 600;">Ukuran Screen: 1280 × 720px</span>
+            </div>
+            <div class="figma-frame">
+                <div class="app-layout">
+                    <!-- Sidebar -->
+                    <div class="app-sidebar">
+                        <div class="brand-logo">
+                            <div class="brand-icon">K</div>
+                            <span>EkskulKNN</span>
+                        </div>
+                        <ul class="nav-list">
+                            <li class="nav-item active">
+                                <span class="nav-icon"></span>
+                                <span>Dashboard</span>
+                            </li>
+                            <li class="nav-item">
+                                <span class="nav-icon"></span>
+                                <span>Data Training</span>
+                            </li>
+                            <li class="nav-item">
+                                <span class="nav-icon"></span>
+                                <span>Data Uji</span>
+                            </li>
+                            <li class="nav-item">
+                                <span class="nav-icon"></span>
+                                <span>Riwayat</span>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <!-- Main Content -->
+                    <div class="app-main">
+                        <div class="top-navbar">
+                            <div>
+                                <h1 class="page-title">Dashboard</h1>
+                                <p class="page-subtitle">Laravel + MySQL untuk rekomendasi ekstrakurikuler dengan KNN</p>
+                            </div>
+                            <div class="user-profile">
+                                <div>
+                                    <div style="font-weight: 700;">Admin Ekskul</div>
+                                    <div style="color: var(--text-muted);">Admin</div>
+                                </div>
+                                <div class="btn-logout-icon">↪</div>
+                                <div class="user-avatar">A</div>
+                            </div>
+                        </div>
+
+                        <!-- Card Hero -->
+                        <div class="dash-card">
+                            <div class="dash-card-header">
+                                <h2>Sistem Rekomendasi Ekstrakurikuler</h2>
+                                <p>Rumusan masalah difokuskan pada pembuatan sistem berbasis Laravel, penggunaan data siswa dari database MySQL, dan penerapan K-Nearest Neighbor memakai nilai akademik.</p>
+                            </div>
+
+                            <div class="stats-grid">
+                                <div class="stat-box">
+                                    <div class="stat-number">0</div>
+                                    <div class="stat-label">Total Data Latih MySQL</div>
+                                </div>
+                                <div class="stat-box">
+                                    <div class="stat-number">3</div>
+                                    <div class="stat-label">Parameter K Aktif</div>
+                                </div>
+                                <div class="stat-box">
+                                    <div class="stat-number">0</div>
+                                    <div class="stat-label">Riwayat Prediksi</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SCREEN 3: DATA TRAINING -->
+        <div class="figma-frame-wrapper" id="frame-3">
+            <div class="figma-frame-header">
+                <span class="figma-tag">Gambar 4.3 Sketsa Hi-Fi Halaman Data Training</span>
+                <span style="font-size: 12px; color: var(--text-muted); font-weight: 600;">Ukuran Screen: 1280 × 720px</span>
+            </div>
+            <div class="figma-frame">
+                <div class="app-layout">
+                    <!-- Sidebar -->
+                    <div class="app-sidebar">
+                        <div class="brand-logo">
+                            <div class="brand-icon">K</div>
+                            <span>EkskulKNN</span>
+                        </div>
+                        <ul class="nav-list">
+                            <li class="nav-item">
+                                <span class="nav-icon"></span>
+                                <span>Dashboard</span>
+                            </li>
+                            <li class="nav-item active">
+                                <span class="nav-icon"></span>
+                                <span>Data Training</span>
+                            </li>
+                            <li class="nav-item">
+                                <span class="nav-icon"></span>
+                                <span>Data Uji</span>
+                            </li>
+                            <li class="nav-item">
+                                <span class="nav-icon"></span>
+                                <span>Riwayat</span>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <!-- Main Content -->
+                    <div class="app-main">
+                        <div class="top-navbar">
+                            <div>
+                                <h1 class="page-title">Data Training</h1>
+                                <p class="page-subtitle">Laravel + MySQL untuk rekomendasi ekstrakurikuler dengan KNN</p>
+                            </div>
+                            <div class="user-profile">
+                                <div>
+                                    <div style="font-weight: 700;">Admin Ekskul</div>
+                                    <div style="color: var(--text-muted);">Admin</div>
+                                </div>
+                                <div class="btn-logout-icon">↪</div>
+                                <div class="user-avatar">A</div>
+                            </div>
+                        </div>
+
+                        <!-- Card Import -->
+                        <div class="dash-card">
+                            <div style="font-weight: 700; font-size: 15px; margin-bottom: 14px; display: flex; align-items: center; gap: 8px;">
+                                <span>📥</span> Import Data Training ke MySQL
+                            </div>
+
+                            <div class="upload-zone">
+                                <div class="upload-icon">☁️</div>
+                                <div class="upload-title">Pilih File Data Training</div>
+                                <div class="upload-sub">Format .xlsx atau .csv</div>
+                                <div class="upload-status">Belum ada file dipilih</div>
+                            </div>
+
+                            <div class="info-format-box">
+                                Format Kolom: Nama, MTK, IPA, IPS, BINDO/Bahasa Indonesia, PJOK, SBP/Seni Budaya, RANK, Ekskul
+                            </div>
+
+                            <button class="btn-full" style="margin-bottom: 20px;">
+                                📥 Import dan Simpan Data Training
+                            </button>
+
+                            <!-- Table Data -->
+                            <div class="table-container">
+                                <table class="wireframe-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Nama</th>
+                                            <th>MTK</th>
+                                            <th>IPA</th>
+                                            <th>IPS</th>
+                                            <th>B. Indonesia</th>
+                                            <th>PJOK</th>
+                                            <th>Seni Budaya</th>
+                                            <th>Rank</th>
+                                            <th>Ekstrakurikuler</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td colspan="9">Belum ada data. Silakan import file Excel data training.</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SCREEN 4: DATA UJI (ADMIN) -->
+        <div class="figma-frame-wrapper" id="frame-4">
+            <div class="figma-frame-header">
+                <span class="figma-tag">Gambar 4.4 Sketsa Hi-Fi Halaman Form Data Uji (Admin)</span>
+                <span style="font-size: 12px; color: var(--text-muted); font-weight: 600;">Ukuran Screen: 1280 × 720px</span>
+            </div>
+            <div class="figma-frame">
+                <div class="app-layout">
+                    <!-- Sidebar -->
+                    <div class="app-sidebar">
+                        <div class="brand-logo">
+                            <div class="brand-icon">K</div>
+                            <span>EkskulKNN</span>
+                        </div>
+                        <ul class="nav-list">
+                            <li class="nav-item">
+                                <span class="nav-icon"></span>
+                                <span>Dashboard</span>
+                            </li>
+                            <li class="nav-item">
+                                <span class="nav-icon"></span>
+                                <span>Data Training</span>
+                            </li>
+                            <li class="nav-item active">
+                                <span class="nav-icon"></span>
+                                <span>Data Uji</span>
+                            </li>
+                            <li class="nav-item">
+                                <span class="nav-icon"></span>
+                                <span>Riwayat</span>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <!-- Main Content -->
+                    <div class="app-main">
+                        <div class="top-navbar">
+                            <div>
+                                <h1 class="page-title">Data Uji</h1>
+                                <p class="page-subtitle">Laravel + MySQL untuk rekomendasi ekstrakurikuler dengan KNN</p>
+                            </div>
+                            <div class="user-profile">
+                                <div>
+                                    <div style="font-weight: 700;">Admin Ekskul</div>
+                                    <div style="color: var(--text-muted);">Admin</div>
+                                </div>
+                                <div class="btn-logout-icon">↪</div>
+                                <div class="user-avatar">A</div>
+                            </div>
+                        </div>
+
+                        <!-- Form Input Data Uji Card -->
+                        <div class="dash-card">
+                            <div style="font-weight: 700; font-size: 15px; margin-bottom: 16px; display: flex; align-items: center; gap: 8px;">
+                                <span>👤+</span> Data Uji Siswa
+                            </div>
+
+                            <div class="form-grid">
+                                <div class="form-group">
+                                    <label class="form-label">Nama Siswa</label>
+                                    <input type="text" class="form-input" placeholder="Opsional">
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">Matematika</label>
+                                    <input type="number" class="form-input" placeholder="Nilai (0-100)">
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">IPA</label>
+                                    <input type="number" class="form-input" placeholder="Nilai (0-100)">
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">IPS</label>
+                                    <input type="number" class="form-input" placeholder="Nilai (0-100)">
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">Bahasa Indonesia</label>
+                                    <input type="number" class="form-input" placeholder="Nilai (0-100)">
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">PJOK</label>
+                                    <input type="number" class="form-input" placeholder="Nilai (0-100)">
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">Seni Budaya</label>
+                                    <input type="number" class="form-input" placeholder="Nilai (0-100)">
+                                </div>
+                            </div>
+
+                            <!-- Slider Parameter K -->
+                            <div class="slider-group">
+                                <div class="slider-header">
+                                    <span>Parameter K</span>
+                                    <span style="font-weight: 800;">3</span>
+                                </div>
+                                <div class="slider-bar-track">
+                                    <div class="slider-bar-fill"></div>
+                                    <div class="slider-thumb"></div>
+                                </div>
+                            </div>
+
+                            <button class="btn-full">
+                                🪄 Dapatkan Rekomendasi Ekskul
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SCREEN 5: MODAL HASIL & LANGKAH MATEMATIS -->
+        <div class="figma-frame-wrapper" id="frame-5">
+            <div class="figma-frame-header">
+                <span class="figma-tag">Gambar 4.5 Sketsa Hi-Fi Modal Langkah Matematis KNN</span>
+                <span style="font-size: 12px; color: var(--text-muted); font-weight: 600;">Ukuran Screen: 1280 × 720px</span>
+            </div>
+            <div class="figma-frame">
+                <div class="modal-canvas">
+                    <div class="modal-backdrop"></div>
+                    <div class="modal-card">
+                        <div class="modal-header">
+                            <div>
+                                <span class="modal-badge">PERHITUNGAN KNN</span>
+                                <h2 class="modal-title">Langkah Matematis Rekomendasi</h2>
+                            </div>
+                            <button class="btn-close">✕</button>
+                        </div>
+
+                        <!-- Rumus Euclidean Distance -->
+                        <div class="math-box">
+                            d(x, y) = √((MTK<sub>x</sub> - MTK<sub>y</sub>)² + (IPA<sub>x</sub> - IPA<sub>y</sub>)² + (IPS<sub>x</sub> - IPS<sub>y</sub>)² + (BINDO<sub>x</sub> - BINDO<sub>y</sub>)² + (PJOK<sub>x</sub> - PJOK<sub>y</sub>)² + (SBP<sub>x</sub> - SBP<sub>y</sub>)²)
+                        </div>
+
+                        <!-- Rincian Perhitungan -->
+                        <div class="math-box">
+                            <div class="math-box-title">Rincian Hitung</div>
+                            X = (MTK<sub>uj</sub>, IPA<sub>uj</sub>, IPS<sub>uj</sub>, BINDO<sub>uj</sub>, PJOK<sub>uj</sub>, SBP<sub>uj</sub>)<br>
+                            Y = (MTK<sub>lath</sub>, IPA<sub>lath</sub>, IPS<sub>lath</sub>, BINDO<sub>lath</sub>, PJOK<sub>lath</sub>, SBP<sub>lath</sub>)<br><br>
+                            d₁ = (MTK<sub>x</sub> - MTK<sub>y</sub>)²<br>
+                            d₂ = (IPA<sub>x</sub> - IPA<sub>y</sub>)²<br>
+                            d₃ = (IPS<sub>x</sub> - IPS<sub>y</sub>)²<br>
+                            d₄ = (BINDO<sub>x</sub> - BINDO<sub>y</sub>)²<br>
+                            d₅ = (PJOK<sub>x</sub> - PJOK<sub>y</sub>)²<br>
+                            d₆ = (SBP<sub>x</sub> - SBP<sub>y</sub>)²<br><br>
+                            d(x, y) = √(d₁ + d₂ + d₃ + d₄ + d₅ + d₆)<br>
+                            <span style="color: var(--text-muted); font-style: italic; font-size: 11px;">Hasil jarak ini digunakan untuk urutan tetangga terdekat.</span>
+                        </div>
+
+                        <!-- Grid Tabel Hasil -->
+                        <div class="modal-tables-grid">
+                            <!-- Nilai Input Siswa -->
+                            <div>
+                                <div style="font-size: 13px; font-weight: 700; margin-bottom: 6px;">Nilai Input Siswa</div>
+                                <table class="table-mini">
+                                    <tbody>
+                                        <tr>
+                                            <td>Matematika</td>
+                                            <td class="text-right font-bold">83</td>
+                                        </tr>
+                                        <tr>
+                                            <td>IPA</td>
+                                            <td class="text-right font-bold">81</td>
+                                        </tr>
+                                        <tr>
+                                            <td>IPS</td>
+                                            <td class="text-right font-bold">84</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Bahasa Indonesia</td>
+                                            <td class="text-right font-bold">80</td>
+                                        </tr>
+                                        <tr>
+                                            <td>PJOK</td>
+                                            <td class="text-right font-bold">81</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Seni Budaya</td>
+                                            <td class="text-right font-bold">85</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+
+                            <!-- Voting Tetangga -->
+                            <div>
+                                <div style="font-size: 13px; font-weight: 700; margin-bottom: 6px;">Voting Tetangga</div>
+                                <table class="table-mini">
+                                    <tbody>
+                                        <tr>
+                                            <td>Voli</td>
+                                            <td class="text-right font-bold">2 suara</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Tahfiz</td>
+                                            <td class="text-right font-bold">1 suara</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SCREEN 6: RIWAYAT PREDIKSI -->
+        <div class="figma-frame-wrapper" id="frame-6">
+            <div class="figma-frame-header">
+                <span class="figma-tag">Gambar 4.6 Sketsa Hi-Fi Halaman Riwayat Prediksi</span>
+                <span style="font-size: 12px; color: var(--text-muted); font-weight: 600;">Ukuran Screen: 1280 × 720px</span>
+            </div>
+            <div class="figma-frame">
+                <div class="app-layout">
+                    <!-- Sidebar -->
+                    <div class="app-sidebar">
+                        <div class="brand-logo">
+                            <div class="brand-icon">K</div>
+                            <span>EkskulKNN</span>
+                        </div>
+                        <ul class="nav-list">
+                            <li class="nav-item">
+                                <span class="nav-icon"></span>
+                                <span>Dashboard</span>
+                            </li>
+                            <li class="nav-item">
+                                <span class="nav-icon"></span>
+                                <span>Data Training</span>
+                            </li>
+                            <li class="nav-item">
+                                <span class="nav-icon"></span>
+                                <span>Data Uji</span>
+                            </li>
+                            <li class="nav-item active">
+                                <span class="nav-icon"></span>
+                                <span>Riwayat</span>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <!-- Main Content -->
+                    <div class="app-main">
+                        <div class="top-navbar">
+                            <div>
+                                <h1 class="page-title">Riwayat</h1>
+                                <p class="page-subtitle">Laravel + MySQL untuk rekomendasi ekstrakurikuler dengan KNN</p>
+                            </div>
+                            <div class="user-profile">
+                                <div>
+                                    <div style="font-weight: 700;">Admin Ekskul</div>
+                                    <div style="color: var(--text-muted);">Admin</div>
+                                </div>
+                                <div class="btn-logout-icon">↪</div>
+                                <div class="user-avatar">A</div>
+                            </div>
+                        </div>
+
+                        <!-- Alert Notification -->
+                        <div class="alert-banner">
+                            Prediksi berhasil dihitung dan disimpan ke riwayat.
+                        </div>
+
+                        <!-- Card Tabel Riwayat -->
+                        <div class="dash-card">
+                            <div style="font-weight: 700; font-size: 15px; margin-bottom: 16px; display: flex; align-items: center; gap: 8px;">
+                                <span>🔄</span> Riwayat Prediksi dari MySQL
+                            </div>
+
+                            <div class="table-container">
+                                <table class="wireframe-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Waktu</th>
+                                            <th>Nama</th>
+                                            <th>Nilai Input</th>
+                                            <th>K</th>
+                                            <th>Hasil</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td colspan="5">Belum ada riwayat prediksi.</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SCREEN 7: PORTAL SISWA (DATA UJI SISWA) -->
+        <div class="figma-frame-wrapper" id="frame-7">
+            <div class="figma-frame-header">
+                <span class="figma-tag">Gambar 4.7 Sketsa Hi-Fi Halaman Data Uji Siswa (Portal Siswa)</span>
+                <span style="font-size: 12px; color: var(--text-muted); font-weight: 600;">Ukuran Screen: 1280 × 720px</span>
+            </div>
+            <div class="figma-frame">
+                <div class="portal-layout">
+                    <!-- Top Navbar for Portal Siswa -->
+                    <div class="top-navbar">
+                        <div>
+                            <h1 class="page-title">Data Uji Siswa</h1>
+                            <p class="page-subtitle">Masukkan nilai siswa untuk mendapatkan rekomendasi ekstrakurikuler.</p>
+                        </div>
+                        <div class="user-profile">
+                            <div>
+                                <div style="font-weight: 700;">Siswa Ekskul</div>
+                                <div style="color: var(--text-muted);">Siswa</div>
+                            </div>
+                            <div class="btn-logout-icon">↪</div>
+                            <div class="user-avatar">S</div>
+                        </div>
+                    </div>
+
+                    <!-- Centered Card Form -->
+                    <div class="portal-container">
+                        <div class="dash-card">
+                            <div style="font-weight: 700; font-size: 15px; margin-bottom: 16px; display: flex; align-items: center; gap: 8px;">
+                                <span>👤+</span> Data Uji Siswa
+                            </div>
+
+                            <div class="form-grid">
+                                <div class="form-group">
+                                    <label class="form-label">Nama Siswa</label>
+                                    <input type="text" class="form-input" placeholder="Opsional">
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">Matematika</label>
+                                    <input type="number" class="form-input" placeholder="Nilai (0-100)">
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">IPA</label>
+                                    <input type="number" class="form-input" placeholder="Nilai (0-100)">
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">IPS</label>
+                                    <input type="number" class="form-input" placeholder="Nilai (0-100)">
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">Bahasa Indonesia</label>
+                                    <input type="number" class="form-input" placeholder="Nilai (0-100)">
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">PJOK</label>
+                                    <input type="number" class="form-input" placeholder="Nilai (0-100)">
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">Seni Budaya</label>
+                                    <input type="number" class="form-input" placeholder="Nilai (0-100)">
+                                </div>
+                            </div>
+
+                            <!-- Slider Parameter K -->
+                            <div class="slider-group">
+                                <div class="slider-header">
+                                    <span>Parameter K</span>
+                                    <span style="font-weight: 800;">3</span>
+                                </div>
+                                <div class="slider-bar-track">
+                                    <div class="slider-bar-fill"></div>
+                                    <div class="slider-thumb"></div>
+                                </div>
+                            </div>
+
+                            <button class="btn-full">
+                                🪄 Dapatkan Rekomendasi Ekskul
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+</body>
+</html>
