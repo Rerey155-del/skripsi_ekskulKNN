@@ -12,88 +12,6 @@
         $prediction = session('prediction_id') ? $histories->firstWhere('id', session('prediction_id')) : null;
     @endphp
 
-    @if (auth()->user()->role === 'siswa')
-    <main class="main-content" style="padding: 2rem; margin: 0 auto; width: min(1100px, 100%);">
-        <header>
-            <div style="display: flex; align-items: center; gap: 1rem;">
-                <img src="{{ asset('assets/MTSN 2 Pesisir Selatan.png') }}" alt="Logo MTsN 2 Pesisir Selatan" style="height: 52px; width: auto; object-fit: contain; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.2));">
-                <div>
-                    <h1 id="pageTitle">MTsN 2 Pesisir Selatan</h1>
-                    <p style="color: var(--text-muted); margin-top: 0.25rem;">Rekomendasi Ekstrakurikuler Siswa (KNN)</p>
-                </div>
-            </div>
-            <div class="user-profile">
-                <span style="color: var(--text-muted); text-align:right;">
-                    {{ auth()->user()->name }}<br>
-                    <small>{{ ucfirst(auth()->user()->role) }}</small>
-                </span>
-                <form method="POST" action="{{ route('logout') }}">
-                    @csrf
-                    <button type="submit" class="modal-close" style="width:auto; padding:0 0.85rem;">
-                        <i class="fa-solid fa-right-from-bracket"></i>
-                    </button>
-                </form>
-                <div class="avatar"></div>
-            </div>
-        </header>
-
-        @if (session('success'))
-            <div class="alert success">{{ session('success') }}</div>
-        @endif
-
-        @if ($errors->any())
-            <div class="alert danger">
-                @foreach ($errors->all() as $error)
-                    <div>{{ $error }}</div>
-                @endforeach
-            </div>
-        @endif
-
-        <div class="glass-card" style="max-width: 900px; margin: 0 auto; width: 100%;">
-            <h2 class="card-title"><i class="fa-solid fa-user-plus"></i> Data Uji Siswa</h2>
-            <form method="POST" action="{{ route('knn.predict') }}">
-                @csrf
-                <div class="input-grid three">
-                    <div class="input-field"><label>Nama Siswa</label><input name="nama_siswa" value="{{ old('nama_siswa') }}" placeholder="Opsional"></div>
-                    <div class="input-field"><label>Matematika</label><input type="number" name="nilai_matematika" value="{{ old('nilai_matematika') }}" min="0" max="100" required></div>
-                    <div class="input-field"><label>IPA</label><input type="number" name="nilai_ipa" value="{{ old('nilai_ipa') }}" min="0" max="100" required></div>
-                    <div class="input-field"><label>IPS</label><input type="number" name="nilai_ips" value="{{ old('nilai_ips') }}" min="0" max="100" required></div>
-                    <div class="input-field"><label>Bahasa Indonesia</label><input type="number" name="nilai_bahasa_indonesia" value="{{ old('nilai_bahasa_indonesia') }}" min="0" max="100" required></div>
-                    <div class="input-field"><label>PJOK</label><input type="number" name="nilai_pjok" value="{{ old('nilai_pjok') }}" min="0" max="100" required></div>
-                    <div class="input-field"><label>Seni Budaya</label><input type="number" name="nilai_seni_budaya" value="{{ old('nilai_seni_budaya') }}" min="0" max="100" required></div>
-                </div>
-
-                <div class="setting-group">
-                    <div class="setting-header">
-                        <span class="setting-label">Parameter K</span>
-                        <span class="setting-value" id="kValue">{{ old('k_value', $defaultK) }}</span>
-                    </div>
-                    <input type="range" id="kSlider" name="k_value" min="1" max="15" value="{{ old('k_value', $defaultK) }}" step="2">
-                </div>
-
-                <button type="submit" class="btn-primary"><i class="fa-solid fa-wand-magic-sparkles"></i> Dapatkan Rekomendasi Ekskul</button>
-            </form>
-
-            @if ($prediction)
-                <div class="result-panel glass-card active" id="resultPanel" style="margin-top: 1.5rem;">
-                    <div class="result-label">Rekomendasi Ekstrakurikuler:</div>
-                    <div class="result-value">{{ $prediction->hasil_rekomendasi }}</div>
-                    <div style="margin-top: 1rem;">
-                        <a href="{{ route('knn.laporan.cetak-detail', $prediction->id) }}" target="_blank" class="btn-primary" style="display:inline-flex; align-items:center; gap:0.5rem; text-decoration:none; padding:0.6rem 1.2rem; font-size:0.9rem;">
-                            <i class="fa-solid fa-file-pdf"></i> Cetak Hasil Rekomendasi (PDF)
-                        </a>
-                    </div>
-                </div>
-            @else
-                <div class="result-panel glass-card" id="resultPanel" style="margin-top: 1.5rem;">
-                    <div class="result-label">Rekomendasi Ekstrakurikuler:</div>
-                    <div class="result-value">Belum ada hasil</div>
-                    <div style="color: var(--text-muted); margin-top: 0.75rem;">Data belum diproses oleh admin atau belum tersimpan di sistem.</div>
-                </div>
-            @endif
-        </div>
-    </main>
-    @else
     <aside class="sidebar">
         <div class="logo" style="display: flex; align-items: center; gap: 0.75rem;">
             <img src="{{ asset('assets/MTSN 2 Pesisir Selatan.png') }}" alt="Logo MTsN 2 Pesisir Selatan" style="height: 38px; width: auto; object-fit: contain; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.2));">
@@ -103,6 +21,9 @@
             <li class="nav-item active" data-target="dashboard"><i class="fa-solid fa-chart-line"></i> Dashboard</li>
             <li class="nav-item" data-target="data-training"><i class="fa-solid fa-database"></i> Data Training</li>
             <li class="nav-item" data-target="prediksi"><i class="fa-solid fa-users"></i> Data Uji</li>
+            <li class="nav-item" data-target="riwayat"><i class="fa-solid fa-clock-rotate-left"></i> Riwayat</li>
+        </ul>
+    </aside>
             <li class="nav-item" data-target="riwayat"><i class="fa-solid fa-clock-rotate-left"></i> Riwayat</li>
         </ul>
     </aside>
@@ -169,7 +90,6 @@
             </div>
         </div>
 
-        @if (auth()->user()->role === 'admin')
         <div id="view-data-training" class="view-section dashboard-grid" style="grid-template-columns: 1fr;">
             <div class="glass-card" style="max-width: 1000px; margin: 0 auto; width: 100%;">
                 <h2 class="card-title"><i class="fa-solid fa-file-import"></i> Import Data Training ke MySQL</h2>
@@ -227,9 +147,7 @@
                 </div>
             </div>
         </div>
-        @endif
 
-        @if (auth()->user()->role === 'admin')
         <div id="view-prediksi" class="view-section dashboard-grid" style="grid-template-columns: 1fr;">
             <div class="glass-card" style="max-width: 900px; margin: 0 auto; width: 100%;">
                 <h2 class="card-title"><i class="fa-solid fa-user-plus"></i> Data Uji Siswa</h2>
@@ -477,9 +395,7 @@
                 </div>
             </div>
         </div>
-        @endif
     </main>
-    @endif
 
     <script src="{{ asset('js/knn_script.js') }}"></script>
 </body>

@@ -88,32 +88,6 @@ class KnnController extends Controller
             'prestasi_non_akademik' => 0,
         ];
 
-        if ($request->user()?->role === 'siswa') {
-            $history = KnnPredictionHistory::query()
-                ->where('nama_siswa', $predictionInput['nama_siswa'])
-                ->where('nilai_matematika', $predictionInput['nilai_matematika'])
-                ->where('nilai_ipa', $predictionInput['nilai_ipa'])
-                ->where('nilai_ips', $predictionInput['nilai_ips'])
-                ->where('nilai_bahasa_indonesia', $predictionInput['nilai_bahasa_indonesia'])
-                ->where('nilai_pjok', $predictionInput['nilai_pjok'])
-                ->where('nilai_seni_budaya', $predictionInput['nilai_seni_budaya'])
-                ->where('k_value', (int) $validated['k_value'])
-                ->latest()
-                ->first();
-
-            if (! $history) {
-                return redirect()
-                    ->route('knn.index')
-                    ->withErrors(['dataset' => 'Data siswa belum diproses oleh admin, sehingga hasil rekomendasi belum tersedia.'])
-                    ->withInput();
-            }
-
-            return redirect()
-                ->route('knn.index')
-                ->with('prediction_id', $history->id)
-                ->with('success', 'Hasil rekomendasi berhasil ditampilkan.');
-        }
-
         $samples = KnnTrainingSample::all();
 
         if ($samples->isEmpty()) {

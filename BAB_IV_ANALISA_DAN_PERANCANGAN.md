@@ -107,24 +107,18 @@ Perancangan model sistem dilakukan untuk menggambarkan alur kerja aplikasi mulai
 
 #### 4.2.1.1 Use Case Diagram
 
-Use case diagram menggambarkan interaksi aktor dengan sistem. Pada sistem ini terdapat dua aktor utama, yaitu admin dan siswa.
+Use case diagram menggambarkan interaksi aktor dengan sistem. Pada sistem ini hanya terdapat **1 aktor utama**, yaitu **Admin / Pembina Ekstrakurikuler**.
 
-Admin berperan dalam pengelolaan data dan pemantauan hasil sistem, sedangkan siswa berperan sebagai pengguna data uji yang nilai akademiknya diproses untuk mendapatkan rekomendasi ekstrakurikuler.
+Admin berperan dalam mengelola seluruh proses sistem rekomendasi, mulai dari mengimport data latih, memasukkan data uji siswa, mengatur parameter `K`, mengeksekusi perhitungan K-Nearest Neighbors (KNN), hingga mencetak laporan hasil rekomendasi.
 
-Aktivitas admin meliputi:
+Aktivitas Admin meliputi:
 
-- mengimport data training,
-- melihat data training yang tersimpan,
-- mengatur parameter `K`,
-- melihat hasil rekomendasi dan riwayat prediksi,
-- melihat langkah perhitungan matematis.
-
-Aktivitas siswa meliputi:
-
-- memasukkan nilai akademik sebagai data uji,
-- menjalankan proses prediksi,
-- melihat hasil rekomendasi,
-- melihat langkah perhitungan matematis.
+- mengimport dan mengolah data training dari file Excel/CSV ke database MySQL,
+- melihat dan mengelola data training yang tersimpan di sistem,
+- memasukkan nilai akademik siswa (MTK, IPA, IPS, BINDO, PJOK, SBP) sebagai data uji,
+- mengatur parameter `K` (jumlah tetangga terdekat),
+- mengeksekusi perhitungan algoritma K-NN dan melihat rincian langkah matematis (Jarak Euclidean & Voting),
+- melihat riwayat prediksi serta mencetak laporan rekapitulasi / lembar hasil rekomendasi (PDF).
 
 #### 4.2.1.2 Activity Diagram
 

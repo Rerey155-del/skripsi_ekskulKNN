@@ -346,7 +346,9 @@
                             <th class="text-center" style="width: 30px;">No</th>
                             <th>Nama Siswa Latih</th>
                             <th class="text-center">Rank</th>
-                            <th class="text-center">Ekstrakurikuler</th>
+                            @if(auth()->user()?->role === 'admin')
+                                <th class="text-center">Ekstrakurikuler</th>
+                            @endif
                             <th class="text-center">Jarak (Euclidean)</th>
                         </tr>
                     </thead>
@@ -356,7 +358,9 @@
                                 <td class="text-center">{{ $idx + 1 }}</td>
                                 <td>{{ $neighbor['nama_siswa'] ?? '-' }}</td>
                                 <td class="text-center">{{ $neighbor['rank'] ?? '-' }}</td>
-                                <td class="text-center font-bold">{{ $neighbor['ekstrakurikuler'] ?? '-' }}</td>
+                                @if(auth()->user()?->role === 'admin')
+                                    <td class="text-center font-bold">{{ $neighbor['ekstrakurikuler'] ?? '-' }}</td>
+                                @endif
                                 <td class="text-center">{{ number_format($neighbor['jarak'] ?? 0, 4) }}</td>
                             </tr>
                         @endforeach
@@ -428,7 +432,7 @@
                 <p>Pesisir Selatan, {{ date('d F Y') }}</p>
                 <p><strong>Pembina / Admin Ekstrakurikuler</strong></p>
                 <div class="ttd-space"></div>
-                <p class="ttd-name">{{ auth()->user()->name ?? 'Admin Ekstrakurikuler' }}</p>
+                <p class="ttd-name">NIP. ........................................</p>
             </div>
         </div>
     </div>

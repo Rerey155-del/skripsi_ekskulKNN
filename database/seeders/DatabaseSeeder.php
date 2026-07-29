@@ -29,15 +29,6 @@ class DatabaseSeeder extends Seeder
         );
 
         User::updateOrCreate(
-            ['email' => 'siswa@example.com'],
-            [
-                'name' => 'Siswa Ekskul',
-                'password' => Hash::make('siswa123'),
-                'role' => 'siswa',
-            ],
-        );
-
-        User::updateOrCreate(
             ['email' => 'test@example.com'],
             [
                 'name' => 'Test User',
