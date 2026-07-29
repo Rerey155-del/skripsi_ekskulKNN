@@ -24,9 +24,6 @@
             <li class="nav-item" data-target="riwayat"><i class="fa-solid fa-clock-rotate-left"></i> Riwayat</li>
         </ul>
     </aside>
-            <li class="nav-item" data-target="riwayat"><i class="fa-solid fa-clock-rotate-left"></i> Riwayat</li>
-        </ul>
-    </aside>
 
     <main class="main-content">
         <header>
