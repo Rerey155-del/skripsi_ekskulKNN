@@ -18,7 +18,7 @@ class KnnController extends Controller
         return view('knn', [
             'totalTraining' => KnnTrainingSample::count(),
             'totalHistories' => KnnPredictionHistory::count(),
-            'trainingSamples' => KnnTrainingSample::orderBy('nama_siswa')->get(),
+            'trainingSamples' => KnnTrainingSample::orderBy('id')->get(),
             'histories' => KnnPredictionHistory::latest()->take(10)->get(),
             'defaultK' => 3,
         ]);
@@ -266,10 +266,17 @@ class KnnController extends Controller
         foreach ($rows as $index => $row) {
             $headers = array_map(fn ($value) => $this->normalizeHeader((string) $value), $row);
 
-            if (
-                in_array('nama', $headers, true)
-                && (in_array('ekskul', $headers, true) || in_array('ekstrakurikuler', $headers, true))
-            ) {
+            $hasNama = in_array('nama', $headers, true)
+                || in_array('nama_siswa', $headers, true)
+                || in_array('siswa', $headers, true)
+                || in_array('nama_lengkap', $headers, true);
+
+            $hasEkskul = in_array('ekskul', $headers, true)
+                || in_array('ekstrakurikuler', $headers, true)
+                || in_array('hasil', $headers, true)
+                || in_array('label', $headers, true);
+
+            if ($hasNama && $hasEkskul) {
                 return $index;
             }
         }
