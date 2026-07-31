@@ -28,7 +28,7 @@ foreach ($samples as $sample) {
     );
     $distances[] = [
         'nama' => $sample->nama_siswa,
-        'jarak' => round($d, 2),
+        'jarak' => round($d, 4),
         'ekskul' => $sample->ekstrakurikuler
     ];
 }

@@ -199,7 +199,7 @@
                                     <tr>
                                         <td>{{ $neighbor['nama_siswa'] }}</td>
                                         <td>{{ $neighbor['rank'] }}</td>
-                                        <td>{{ number_format($neighbor['jarak'], 2) }}</td>
+                                        <td>{{ number_format($neighbor['jarak'], 4) }}</td>
                                         <td>{{ $neighbor['ekstrakurikuler'] }}</td>
                                     </tr>
                                 @empty
@@ -333,7 +333,7 @@
                                                     </div>
                                                 </td>
                                                 <td>{{ $neighbor['total_selisih_kuadrat'] ?? '-' }}</td>
-                                                <td>{{ number_format($neighbor['jarak'], 2) }}</td>
+                                                <td>{{ number_format($neighbor['jarak'], 4) }}</td>
                                             </tr>
                                         @endforeach
                                     </tbody>

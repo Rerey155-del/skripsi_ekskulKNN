@@ -426,13 +426,15 @@
                 <p>Mengetahui,</p>
                 <p><strong>Kepala MTsN 2 Pesisir Selatan</strong></p>
                 <div class="ttd-space"></div>
-                <p class="ttd-name">NIP. ........................................</p>
+                <p class="ttd-name">Alfauzan, S.Ag., M.M.</p>
+                <p>NIP. 197201032005011009</p>
             </div>
             <div class="ttd-box">
                 <p>Pesisir Selatan, {{ date('d F Y') }}</p>
                 <p><strong>Pembina / Admin Ekstrakurikuler</strong></p>
                 <div class="ttd-space"></div>
-                <p class="ttd-name">NIP. ........................................</p>
+                <p class="ttd-name">........................................</p>
+                <p>NIP. ........................................</p>
             </div>
         </div>
     </div>

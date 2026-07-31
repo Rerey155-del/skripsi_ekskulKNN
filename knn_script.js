@@ -198,7 +198,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 tr.innerHTML = `
                     <td>${index + 1}. ${neighbor.name}</td>
                     <td>Rank ${neighbor.rank}</td>
-                    <td>${neighbor.distance.toFixed(2)}</td>
+                    <td>${neighbor.distance.toFixed(4)}</td>
                     <td style="font-weight: 600; color: ${neighbor.ekskul === predictedEkskul ? 'var(--success)' : 'var(--text-main)'}">${neighbor.ekskul}</td>
                 `;
                 neighborsTableBody.appendChild(tr);
