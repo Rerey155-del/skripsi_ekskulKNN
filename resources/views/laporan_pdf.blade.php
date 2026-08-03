@@ -28,11 +28,13 @@
         .paper {
             background: #ffffff;
             width: 210mm;
+            max-width: 100%;
             min-height: 297mm;
             margin: 0 auto;
-            padding: 20mm 20mm 20mm 20mm;
+            padding: 15mm;
             box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
             position: relative;
+            box-sizing: border-box;
         }
 
         /* Kop Surat Official */
@@ -124,17 +126,22 @@
         /* Table Data */
         .data-table {
             width: 100%;
+            max-width: 100%;
             border-collapse: collapse;
             margin-top: 10px;
-            margin-bottom: 25px;
-            font-size: 11pt;
+            margin-bottom: 20px;
+            font-size: 10pt;
+            table-layout: fixed;
+            word-wrap: break-word;
         }
 
         .data-table th, 
         .data-table td {
             border: 1px solid #000;
-            padding: 7px 8px;
+            padding: 5px 6px;
             text-align: left;
+            word-break: break-word;
+            overflow-wrap: break-word;
         }
 
         .data-table th {
@@ -142,7 +149,7 @@
             text-align: center;
             font-weight: bold;
             text-transform: uppercase;
-            font-size: 10pt;
+            font-size: 9.5pt;
         }
 
         .text-center { text-align: center !important; }
@@ -339,29 +346,98 @@
             </table>
 
             @if(!empty($history->tetangga_terdekat) && is_array($history->tetangga_terdekat))
-                <h4 style="margin-bottom: 8px; font-size: 11pt;">Detail K-Tetangga Terdekat (Perhitungan Jarak Euclidean):</h4>
-                <table class="data-table">
+                <h4 style="margin-bottom: 8px; font-size: 11pt;">1. Hasil K-Tetangga Terdekat (Top K = {{ $history->k_value }}):</h4>
+                <table class="data-table" style="margin-bottom: 20px;">
                     <thead>
                         <tr>
-                            <th class="text-center" style="width: 30px;">No</th>
-                            <th>Nama Siswa Latih</th>
-                            <th class="text-center">Rank</th>
-                            @if(auth()->user()?->role === 'admin')
-                                <th class="text-center">Ekstrakurikuler</th>
-                            @endif
-                            <th class="text-center">Jarak (Euclidean)</th>
+                            <th class="text-center" style="width: 8%;">No</th>
+                            <th style="width: 32%;">Nama Siswa Latih</th>
+                            <th class="text-center" style="width: 12%;">Rank</th>
+                            <th class="text-center" style="width: 28%;">Ekstrakurikuler</th>
+                            <th class="text-center" style="width: 20%;">Jarak (Euclidean)</th>
                         </tr>
                     </thead>
                     <tbody>
                         @foreach($history->tetangga_terdekat as $idx => $neighbor)
+                            <tr style="background-color: #f0fdf4;">
+                                <td class="text-center font-bold">{{ $idx + 1 }}</td>
+                                <td class="font-bold">{{ $neighbor['nama_siswa'] ?? '-' }}</td>
+                                <td class="text-center">{{ $neighbor['rank'] ?? '-' }}</td>
+                                <td class="text-center font-bold" style="color: #166534;">{{ $neighbor['ekstrakurikuler'] ?? '-' }}</td>
+                                <td class="text-center font-bold">{{ number_format($neighbor['jarak'] ?? 0, 4) }}</td>
+                            </tr>
+                        @endforeach
+                    </tbody>
+                </table>
+            @endif
+
+            @if(isset($perKelasSummary) && count($perKelasSummary) > 0)
+                <h4 style="margin-bottom: 8px; font-size: 11pt; margin-top: 15px;">2. Ringkasan Rekapitulasi Jarak Per Kelas Siswa (Kelas VII 1 s/d VII 7):</h4>
+                <table class="data-table" style="margin-bottom: 20px;">
+                    <thead>
+                        <tr>
+                            <th class="text-center" style="width: 8%;">No</th>
+                            <th style="width: 28%;">Kelas Siswa</th>
+                            <th class="text-center" style="width: 16%;">Jumlah Data</th>
+                            <th class="text-center" style="width: 16%;">Jarak Terdekat</th>
+                            <th class="text-center" style="width: 16%;">Rata-rata Jarak</th>
+                            <th class="text-center" style="width: 16%;">Jarak Terjauh</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach($perKelasSummary as $idx => $sum)
                             <tr>
                                 <td class="text-center">{{ $idx + 1 }}</td>
-                                <td>{{ $neighbor['nama_siswa'] ?? '-' }}</td>
-                                <td class="text-center">{{ $neighbor['rank'] ?? '-' }}</td>
-                                @if(auth()->user()?->role === 'admin')
-                                    <td class="text-center font-bold">{{ $neighbor['ekstrakurikuler'] ?? '-' }}</td>
-                                @endif
-                                <td class="text-center">{{ number_format($neighbor['jarak'] ?? 0, 4) }}</td>
+                                <td class="font-bold">{{ $sum['kelas'] }}</td>
+                                <td class="text-center">{{ $sum['jumlah_data'] }} Data</td>
+                                <td class="text-center font-bold" style="color: #15803d;">{{ number_format($sum['jarak_terdekat'], 4) }}</td>
+                                <td class="text-center">{{ number_format($sum['rata_rata_jarak'], 4) }}</td>
+                                <td class="text-center">{{ number_format($sum['jarak_terjauh'], 4) }}</td>
+                            </tr>
+                        @endforeach
+                    </tbody>
+                </table>
+            @endif
+
+            @if(isset($allDistances) && count($allDistances) > 0)
+                <h4 style="margin-bottom: 8px; font-size: 11pt; margin-top: 15px;">3. Rekapitulasi Perhitungan Jarak Euclidean Seluruh Data Latih Berdasarkan Urutan Kelas VII 1 s/d VII 7 ({{ count($allDistances) }} Data):</h4>
+                <table class="data-table" style="font-size: 8.5pt;">
+                    <thead>
+                        <tr>
+                            <th class="text-center" style="width: 5%;">No</th>
+                            <th style="width: 22%;">Nama Data Latih</th>
+                            <th class="text-center" style="width: 11%;">Kelas</th>
+                            <th class="text-center" style="width: 21%;">Nilai (MTK,IPA,IPS,BIN,PJK,SEN)</th>
+                            <th class="text-center" style="width: 6%;">Rank</th>
+                            <th class="text-center" style="width: 14%;">Ekstrakurikuler</th>
+                            <th class="text-center" style="width: 11%;">Jarak Euclidean</th>
+                            <th class="text-center" style="width: 10%;">Keterangan</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach($allDistances as $idx => $row)
+                            @php
+                                $topRank = $row['top_k_rank'] ?? null;
+                            @endphp
+                            <tr style="{{ $topRank ? 'background-color: #ecfdf5; font-weight: bold;' : '' }}">
+                                <td class="text-center">{{ $idx + 1 }}</td>
+                                <td>{{ $row['nama_siswa'] }}</td>
+                                <td class="text-center font-bold" style="color: #1d4ed8;">{{ $row['kelas_siswa'] }}</td>
+                                <td class="text-center" style="font-size: 8pt;">
+                                    {{ $row['nilai']['Matematika'] }}, {{ $row['nilai']['IPA'] }}, {{ $row['nilai']['IPS'] }}, {{ $row['nilai']['Bahasa Indonesia'] }}, {{ $row['nilai']['PJOK'] }}, {{ $row['nilai']['Seni Budaya'] }}
+                                </td>
+                                <td class="text-center">{{ $row['rank'] }}</td>
+                                <td class="text-center font-bold">{{ $row['ekstrakurikuler'] }}</td>
+                                <td class="text-center font-bold" style="{{ $topRank ? 'color: #15803d;' : '' }}">
+                                    {{ number_format($row['jarak'], 4) }}
+                                </td>
+                                <td class="text-center">
+                                    @if($topRank)
+                                        <span style="color: #166534; font-weight: bold;">Top-{{ $topRank }}</span>
+                                    @else
+                                        -
+                                    @endif
+                                </td>
                             </tr>
                         @endforeach
                     </tbody>

@@ -40,12 +40,83 @@ class KnnController extends Controller
         ]);
     }
 
+    private function getKelasSiswa(int $index): string
+    {
+        if ($index <= 30) return 'Kelas VII 1';
+        if ($index <= 60) return 'Kelas VII 2';
+        if ($index <= 90) return 'Kelas VII 3';
+        if ($index <= 120) return 'Kelas VII 4';
+        if ($index <= 150) return 'Kelas VII 5';
+        if ($index <= 180) return 'Kelas VII 6';
+        return 'Kelas VII 7';
+    }
+
     public function cetakDetailLaporan(int $id): View
     {
         $history = KnnPredictionHistory::findOrFail($id);
 
+        $testData = [
+            'nilai_matematika' => $history->nilai_matematika,
+            'nilai_ipa' => $history->nilai_ipa,
+            'nilai_ips' => $history->nilai_ips,
+            'nilai_bahasa_indonesia' => $history->nilai_bahasa_indonesia,
+            'nilai_pjok' => $history->nilai_pjok,
+            'nilai_seni_budaya' => $history->nilai_seni_budaya,
+        ];
+
+        $samples = KnnTrainingSample::orderBy('id')->get();
+
+        $calculatedDistances = $samples->map(function (KnnTrainingSample $sample, $idx) use ($testData) {
+            $math = $this->distanceBreakdown($testData, $sample);
+            $kelasSiswa = $this->getKelasSiswa($idx + 1);
+
+            return [
+                'id' => $sample->id,
+                'no_urut' => $idx + 1,
+                'nama_siswa' => $sample->nama_siswa,
+                'kelas_siswa' => $kelasSiswa,
+                'rank' => $sample->rank,
+                'ekstrakurikuler' => $sample->ekstrakurikuler,
+                'nilai' => $math['sample_values'],
+                'sum_squared' => $math['sum_squared'],
+                'jarak' => $math['distance'],
+            ];
+        });
+
+        $sortedByDistance = $calculatedDistances->sortBy([
+            ['jarak', 'asc'],
+            ['rank', 'asc'],
+        ])->values();
+
+        $topKMap = [];
+        foreach ($sortedByDistance->take($history->k_value ?? 3) as $rankIndex => $item) {
+            $topKMap[$item['id']] = $rankIndex + 1;
+        }
+
+        $allDistancesWithRank = $calculatedDistances->map(function ($item) use ($topKMap) {
+            $item['top_k_rank'] = $topKMap[$item['id']] ?? null;
+            return $item;
+        });
+
+        $allDistancesByKelas = $allDistancesWithRank->sortBy(function ($item) {
+            return sprintf('%s_%03d', $item['kelas_siswa'], $item['no_urut']);
+        })->values();
+
+        $perKelasSummary = $allDistancesWithRank->groupBy('kelas_siswa')->map(function ($items, $kelas) {
+            return [
+                'kelas' => $kelas,
+                'jumlah_data' => $items->count(),
+                'jarak_terdekat' => $items->min('jarak'),
+                'jarak_terjauh' => $items->max('jarak'),
+                'rata_rata_jarak' => $items->avg('jarak'),
+            ];
+        })->sortBy('kelas')->values();
+
         return view('laporan_pdf', [
             'history' => $history,
+            'allDistances' => $allDistancesByKelas,
+            'perKelasSummary' => $perKelasSummary,
+            'totalTraining' => $samples->count(),
             'title' => 'Lembar Hasil Rekomendasi Siswa - MTsN 2 Pesisir Selatan',
             'isDetail' => true,
         ]);
